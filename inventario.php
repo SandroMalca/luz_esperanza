@@ -332,7 +332,7 @@ $resultado = $conexion->query("select * from producto order by producto.nombre a
       activarEventosBotones();
 
       // Configurar actualización cada 5 segundos
-      setInterval(actualizarTabla, 60000);
+      //setInterval(actualizarTabla, 60000);
 
       // Eliminar procedimiento
       $(".eliminarFila").click(function() {

@@ -470,7 +470,7 @@ $resultado = $conexion->query("SELECT
 										<span>
 											Tipo Documento: ${cliente.tipodoc}<br>
 											Nro. Doc: ${cliente.nrodoc}<br>
-											Fec. Nacimiento: ${formatDate(cliente.fec_nac)} (Edad: ${cliente.edad})<br>
+											Fec. Nacimiento: ${formatDate(cliente.fec_nac)} (Edad: ${cliente.edad} años)<br>
 											Estado Civil: ${cliente.estado_civil}<br>
 											Sexo: ${cliente.sexo}<br>
 										</span>

@@ -1,0 +1,189 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+
+#icono{
+	width: 40px;
+}
+
+#myTable tr.header, #myTable tr:hover {
+  /* Add a grey background color to the table header and on hover */
+  background-color: #f1f1f1;
+}
+
+#myTable tr {
+  /* Add a bottom border to all table rows */
+  border-bottom: 1px solid #ddd;
+}
+
+#myTable {
+  border-collapse: collapse; /* Collapse borders */
+  width: 100%; /* Full-width */
+  border: 1px solid #ddd; /* Add a grey border */
+}
+
+#myTable th, #myTable td {
+    text-align: left;
+    padding: 12px;
+}
+
+#myTable tr.header{
+  /* Add a grey background color to the table header and on hover */
+  font-size: 18px;
+}
+
+#myTable #nombre{
+	font-weight: bold;
+	font-size: 16px;
+}
+
+#myTable #datos{
+	font-size: 14px;
+}
+
+#myTable2 tr.header, #myTable2 tr:hover {
+  /* Add a grey background color to the table header and on hover */
+  background-color: #f1f1f1;
+}
+
+#myTable2 tr {
+  /* Add a bottom border to all table rows */
+  border-bottom: 1px solid #ddd;
+}
+
+#myTable2 {
+  border-collapse: collapse; /* Collapse borders */
+  width: 100%; /* Full-width */
+  border: 1px solid #ddd; /* Add a grey border */
+}
+
+#myTable2 th, #myTable2 td {
+    text-align: left;
+    padding: 12px;
+}
+
+#myTable2 tr.header{
+  /* Add a grey background color to the table header and on hover */
+  font-size: 18px;
+}
+
+#myTable2 #nombre{
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#myTable2 #datos{
+  font-size: 14px;
+}
+
+.btn-historia{
+  font-size: 15px;
+  background-color: lightblue;
+  color: #263b58;
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 10px 20px 10px 20px;
+}
+
+.nav-link{
+  font-weight: bold;
+  font-size: 15px;
+  color: #fff !important;
+}
+
+.nav-link:hover{
+  font-weight: bold;
+  font-size: 15px;
+}
+
+
+
+    .grupo{
+      padding: 40px;
+    }
+
+    .cuadrado{
+      height: 250px;
+      width: 250px;
+    }
+
+    #cuadrado1{
+      background: url('../img/1.jpg');
+      align-content: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 25px;
+      padding: 10px;
+    }
+
+    #cuadrado2{
+      background: url('../img/2.jpg');
+      align-content: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 25px;
+      padding: 10px;
+    }
+
+    #cuadrado3{
+      background: url('../img/3.jpg');
+      align-content: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 25px;
+      padding: 10px;
+    }
+
+    #cuadrado4{
+      background: url('../img/4.jpg');
+      align-content: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 25px;
+      padding: 10px;
+    }
+
+    #cuadrado5{
+      background: url('../img/5.jpg');
+      align-content: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 25px;
+      padding: 10px;
+    }
+
+    #cuadrado6{
+      background: url('../img/6.jpg');
+      align-content: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 25px;
+      padding: 10px;
+    }
+
+

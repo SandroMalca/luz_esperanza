@@ -8,7 +8,7 @@ try {
     // Actualizar datos de la historia
     $conexion->query("update historia set 
         fecha='".$_POST['fecha']."',
-        id_doctor='".$_POST['id_doctor']."',
+        id_doctor='".(isset($_POST['id_doctor']) ? $_POST['id_doctor'] : "")."',
         motivo='".$_POST['motivo']."',
         enfermedad_actual='".$_POST['enfermedad_actual']."',
         antec_familiar='".$_POST['antec_familiar']."',

@@ -11,7 +11,11 @@ if ($varsesion2 == null || $varsesion2 = '') {
     die();
   }
   
-$resultado = $conexion->query("select persona.*, YEAR(CURDATE())-YEAR(persona.fec_nac) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(persona.fec_nac,'%m-%d'), 0 , -1 ) as edad, tipo_doc.nombre as tipodoc from persona LEFT JOIN tipo_doc on tipo_doc.id=persona.id_tipodoc where persona.id='" . $_REQUEST['id'] . "' ORDER BY ape1, ape2, nombre ASC");
+$resultado = $conexion->query("select persona.*, YEAR(CURDATE())-YEAR(persona.fec_nac) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(persona.fec_nac,'%m-%d'), 0 , -1 ) as edad, 
+tipo_doc.nombre as tipodoc, exploracion_fisica.pad as pad, exploracion_fisica.pas as pas, exploracion_fisica.spo2 as spo2, 
+exploracion_fisica.fc as fc, exploracion_fisica.temp as temp, exploracion_fisica.peso as peso, exploracion_fisica.talla as talla from persona 
+left join exploracion_fisica on exploracion_fisica.id_historia=persona.id 
+left join tipo_doc on tipo_doc.id=persona.id_tipodoc where persona.id='" . $_REQUEST['id'] . "' ORDER BY ape1, ape2, nombre ASC");
 $mostrar = mysqli_fetch_assoc($resultado);
 
 $resultado2 = $conexion->query("select historia.* from historia where id_cliente=" . $_REQUEST['id'] . " ORDER BY id DESC");
@@ -71,15 +75,27 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
                 Nro. Doc: <?php echo $mostrar['nrodoc'] ?> <br>
                 Teléfono: <?php echo $mostrar['telef'] ?> <br>
                 Correo: <?php echo $mostrar['correo'] ?> <br>
-                Fec. Nac: <?php echo $mostrar['fec_nac'] ?> (<?php echo $mostrar['edad'] ?>) <br>
-                Dirección: <?php echo $mostrar['direccion'] ?>
+                Fec. Nac: <?php echo ($mostrar['fec_nac'] && $mostrar['fec_nac'] != '0000-00-00') ? date('d-m-Y', strtotime($mostrar['fec_nac'])) : ''; ?> 
+                <?php echo ($mostrar['edad'] && $mostrar['edad'] > 0) ? '(Edad: ' . $mostrar['edad'] . ' años)' : ''; ?> <br>
+                Sexo: <?php echo $mostrar['sexo'] ?> <br>
+                Estado Civil: <?php echo $mostrar['estado_civil'] ?> <br>
+                <br><h4>SIGNOS VITALES</h4>
+                PAD: <?php echo $mostrar['pad'] ?> mmHg<br>
+                PAS: <?php echo $mostrar['pas'] ?> mmHg<br>
+                SpO2: <?php echo $mostrar['spo2'] ?> %<br>
+                FC: <?php echo $mostrar['fc'] ?> lpm<br>
+                Temperatura: <?php echo $mostrar['temp'] ?> °C<br>
+                Peso: <?php echo $mostrar['peso'] ?> kg<br>
+                Talla: <?php echo $mostrar['talla'] ?> cm<br>
           </span>
           <br><br><br><br>
         </div>
         <div class="col-12 col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-
-          <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar..."> &nbsp; &nbsp; <?php if ($varsesion != 'Admin') {
-     ?> <button class="btn btn-success btn-small" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-medkit" aria-hidden="true"></i></button>
+          <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar..."> &nbsp; &nbsp; 
+          <?php if ($varsesion == 'Admin' || $varsesion == 'Superadmin') { ?> 
+            <button class="btn btn-success btn-small" data-toggle="modal" data-target="#exampleModal">
+              <i class="fa fa-medkit" aria-hidden="true"></i>
+            </button>
           <?php } ?>
           <br><br>
 
@@ -89,7 +105,8 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
               $resultado3 = $conexion->query("select exploracion_fisica.* from exploracion_fisica where id_historia=" . $mostrar2['id']);
               $mostrar3 = mysqli_fetch_array($resultado3);
 
-              $resultadoDoctor = $conexion->query("select persona.id as id, persona.nombre as nombre, persona.ape1 as ape1, persona.ape2 as ape2 from historia LEFT join persona on historia.id_doctor=persona.id where historia.id=" . $mostrar2['id']);
+              $resultadoDoctor = $conexion->query("select persona.id as id, persona.nombre as nombre, persona.ape1 as ape1, 
+              persona.ape2 as ape2 from historia LEFT join persona on historia.id_doctor=persona.id where historia.id=" . $mostrar2['id']);
               $mostrarDoctor = mysqli_fetch_array($resultadoDoctor);
             ?>
 
@@ -97,12 +114,13 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
               <tr>
                 <td>
 
-           Nro. Historia: <?php echo $mostrar2['id']; ?> <br>
+                  Nro. Historia: <?php echo $mostrar2['id']; ?> <br>
                   Fecha: <?php echo date('d-m-Y', strtotime($mostrar2['fecha'])); ?> <br><br>
-                  <b>Doctor:</b> <?php echo $mostrarDoctor['nombre'||""]; ?> <br><br>
+                  <b>Doctor:</b> <?php echo $mostrarDoctor['nombre']; ?> <?php echo $mostrarDoctor['ape1']; ?> <?php echo $mostrarDoctor['ape2'];?> <br><br>
                   Motivo: <?php echo $mostrar2['motivo']; ?> <br><br>
                   Enfermedad Actual: <?php echo $mostrar2['enfermedad_actual']; ?> <br><br>
                   Antecedentes Familiares: <?php echo $mostrar2['antec_familiar']; ?> <br><br>
+                  Antecedentes Personales: <?php echo $mostrar2['antec_personales']; ?> <br><br>
                   Examen Físico: <?php echo $mostrar2['exam_fisico']; ?> <br><br>
                   Diagnóstico Presuntivo: <?php echo $mostrar2['diag_presuntivo']; ?> <br><br>
                   Exámenes Auxiliares: <?php echo $mostrar2['exam_auxiliar']; ?> <br><br>
@@ -110,17 +128,22 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
                   Otros: <?php echo $mostrar2['otros']; ?> <br><br>
                   Diagnóstico Definitivo: <?php echo $mostrar2['diag_definitivo']; ?> <br><br>
                   Tratamientos: <?php echo $mostrar2['tratamiento']; ?> <br><br>
-                  <?php if ($varsesion != 'Admin') { ?>
+                  <?php if ($varsesion == 'Admin' || $varsesion == 'Superadmin') { ?>
                     <button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar"
                       data-id_cliente="<?php echo $_REQUEST['id'] ?>" data-id="<?php echo $mostrar2['id'] ?>"
                       data-id_doctor="<?php echo $mostrarDoctor['id'] ?>" data-fecha="<?php echo $mostrar2['fecha'] ?>"
                       data-motivo="<?php echo $mostrar2['motivo'] ?>" data-antec_familiar="<?php echo $mostrar2['antec_familiar'] ?>"
-                      data-exam_fisico="<?php echo $mostrar2['exam_fisico'] ?>" data-diag_presuntivo="<?php echo $mostrar2['diag_presuntivo'] ?>"
+                      data-antec_personales="<?php echo $mostrar2['antec_personales'] ?>" data-exam_fisico="<?php echo $mostrar2['exam_fisico'] ?>"
+                      data-diag_presuntivo="<?php echo $mostrar2['diag_presuntivo'] ?>" data-diag_definitivo="<?php echo $mostrar2['diag_definitivo'] ?>"
                       data-exam_auxiliar="<?php echo $mostrar2['exam_auxiliar'] ?>" data-laboratorio="<?php echo $mostrar2['laboratorio'] ?>"
                       data-otros="<?php echo $mostrar2['otros'] ?>" data-diag_definitivo="<?php echo $mostrar2['diag_definitivo'] ?>"
                       data-tratamientos="<?php echo $mostrar2['tratamiento'] ?>">Editar</button>
-           <?php } ?> 
-                  <?php if ($varsesion != 'Admin') { ?> <button class="btn btn-danger btn-small btnEliminar" data-id="<?php echo $mostrar2['id']; ?>" data-toggle="modal" data-target="#modalEliminar">Eliminar</button> <?php } ?>
+                  <?php } ?>
+                  <?php if ($varsesion == 'Admin' || $varsesion == 'Superadmin') { ?>
+                    <button class="btn btn-danger btn-small btnEliminar" data-id="<?php echo $mostrar2['id']; ?>" 
+                      data-toggle="modal" data-target="#modalEliminar">Eliminar
+                    </button>
+                  <?php } ?>
                 </td>
               </tr>
            <?php } ?>
@@ -152,15 +175,15 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
             <label for="id_doctor">Doctor</label>
             <select name="id_doctor" id="id_doctor" class="form-control">
               <?php 
-                $resultadoDoctor2 = $conexion->query("select persona.id as id, persona.nombre as nombre, persona.ape1 as ape1, persona.ape2 as ape2 from persona where id_tipopersona='1' order by persona.nombre asc");
+                $resultadoDoctor2 = $conexion->query("select persona.id as id, persona.nombre as nombre, persona.ape1 as ape1, 
+                persona.ape2 as ape2 from persona where id_tipopersona='1' order by persona.nombre asc");
                 while ($mostrarDoctor2 = mysqli_fetch_array($resultadoDoctor2)) {
                ?>
                <option value="<?php echo $mostrarDoctor2['id'] ?>"><?php echo $mostrarDoctor2['nombre'] ?> <?php echo $mostrarDoctor2['ape1'] ?> <?php echo $mostrarDoctor2['ape2'] ?></option>
               <?php } ?>
             </select>         
           </div>
-          <br>
-            
+          <br>            
         	<div>
               <label for="motivo">Motivo de la consulta <span style="color: red">*</span></label>
               <textarea name="motivo" id="motivo" cols="30" rows="5" class="form-control" required></textarea>
@@ -170,6 +193,11 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
               <label for="antec_familiar">Antecedentes Heredofamiliares</label>
               <textarea name="antec_familiar" id="antec_familiar" cols="30" rows="5" class="form-control"></textarea>
         	</div>
+          <br>
+          <div>
+              <label for="antec_personales">Antecedentes Personales</label>
+              <textarea name="antec_personales" id="antec_personales" cols="30" rows="5" class="form-control"></textarea>
+          </div>
           <br>
           <div>
               <label for="exam_fisico">Examen Físico</label>
@@ -239,10 +267,12 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
             <label for="id_doctor">Doctor</label>
             <select name="id_doctor" id="id_doctorEdit" class="form-control">
               <?php 
-                $resultadoDoctor2 = $conexion->query("select persona.id as id, persona.nombre as nombre, persona.ape1 as ape1, persona.ape2 as ape2 from persona where id_tipopersona='1' order by persona.nombre asc");
+                $resultadoDoctor2 = $conexion->query("select persona.id as id, persona.nombre as nombre, persona.ape1 as ape1, 
+                persona.ape2 as ape2 from persona where id_tipopersona='1' order by persona.nombre asc");
                 while ($mostrarDoctor2 = mysqli_fetch_array($resultadoDoctor2)) {
                ?>
-               <option value="<?php echo $mostrarDoctor2['id'] ?>"><?php echo $mostrarDoctor2['nombre'] ?> <?php echo $mostrarDoctor2['ape1'] ?> <?php echo $mostrarDoctor2['ape2'] ?></option>
+               <option value="<?php echo $mostrarDoctor2['id'] ?>"><?php echo $mostrarDoctor2['nombre'] ?> <?php echo $mostrarDoctor2['ape1'] ?> 
+               <?php echo $mostrarDoctor2['ape2'] ?></option>
               <?php } ?>
             </select>         
           </div>
@@ -260,6 +290,11 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
           <div>
               <label for="antec_familiarEdit">Antecedentes Familiares</label>
             <textarea name="antec_familiar" id="antec_familiarEdit" cols="30" rows="5" class="form-control"></textarea> 
+          </div>
+          <br>
+          <div>
+              <label for="antec_personalesEdit">Antecedentes Personales</label>
+              <textarea name="antec_personales" id="antec_personalesEdit" cols="30" rows="5" class="form-control"></textarea>
           </div>
           <br>
           <div>
@@ -372,13 +407,17 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
 	    });
 
       $(".btnEditar").click(function() {
-	      idEditar = $(this).data('id');
-        $("#idEdit").val($(this).data('id'));
+	      var id = $(this).data('id');
+        var id_cliente = $(this).data('id_cliente');
+        $("#idEdit").val(id);
+        $("#id_clienteEdit").val(id_cliente);
         $("#fechaEdit").val($(this).data('fecha'));
         $("#id_doctorEdit").val($(this).data('id_doctor'));
+        $("#nombreEdit").val($(this).data('nombre'));
         $("#motivoEdit").val($(this).data('motivo'));
         $("#enfermedad_actualEdit").val($(this).data('enfermedad_actual'));
         $("#antec_familiarEdit").val($(this).data('antec_familiar'));
+        $("#antec_personalesEdit").val($(this).data('antec_personales'));
         $("#exam_fisicoEdit").val($(this).data('exam_fisico'));
         $("#diag_presuntivoEdit").val($(this).data('diag_presuntivo'));
         $("#exam_auxiliarEdit").val($(this).data('exam_auxiliar'));
@@ -397,10 +436,13 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
           dataType: 'json'
         }).done(function(response) {
           if (response.success) {
+            $('#modalEditar').modal('hide');
             location.reload();
           } else {
-            alert(response.message);
+            alert('Error: ' + response.message);
           }
+        }).fail(function(xhr) {
+          alert('Error al procesar la solicitud: ' + xhr.responseText);
         });
       });
 	    });
@@ -460,10 +502,11 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
                   <td>
                     Nro. Historia: ${historia.id} <br>
                     Fecha: ${historia.fecha.split('-').reverse().join('-')} <br><br>
-                    <b>Doctor:</b> ${historia.doctor||""}<br><br> 
+                    <b>Doctor:</b> ${historia.doctor_nombre} ${historia.doctor_ape1} ${historia.doctor_ape2}<br><br>
                     Motivo: ${historia.motivo} <br><br>
                     Enfermedad Actual: ${historia.enfermedad_actual} <br><br>
                     Antecedentes Familiares: ${historia.antec_familiar} <br><br>
+                    Antecedentes Personales: ${historia.antec_personales} <br><br>
                     Examen Físico: ${historia.exam_fisico} <br><br>
                     Diagnóstico Presuntivo: ${historia.diag_presuntivo} <br><br>
                     Exámenes Auxiliares: ${historia.exam_auxiliar} <br><br>
@@ -471,16 +514,22 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
                     Otros: ${historia.otros} <br><br>
                     Diagnóstico Definitivo: ${historia.diag_definitivo} <br><br>
                     Tratamientos: ${historia.tratamiento} <br><br>
-
+                    <?php if ($varsesion == 'Admin' || $varsesion == 'Superadmin') { ?>
                     <button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" 
                       data-id_cliente="${historia.id_cliente}" data-id="${historia.id}"
                       data-id_doctor="${historia.id_doctor}" data-fecha="${historia.fecha}"
                       data-motivo="${historia.motivo}" data-antec_familiar="${historia.antec_familiar}"
-                      data-exam_fisico="${historia.exam_fisico}" data-diag_presuntivo="${historia.diag_presuntivo}"
-                      data-exam_auxiliar="${historia.exam_auxiliar}" data-laboratorio="${historia.laboratorio}"
-                      data-otros="${historia.otros}" data-diag_definitivo="${historia.diag_definitivo}"
-                      data-tratamiento="${historia.tratamiento}">Editar</button>
-                    <button class="btn btn-danger btn-small btnEliminar" data-id="${historia.id}" data-toggle="modal" data-target="#modalEliminar">Eliminar</button>
+                      data-antec_personales="${historia.antec_personales}" data-exam_fisico="${historia.exam_fisico}"
+                      data-diag_presuntivo="${historia.diag_presuntivo}" data-exam_auxiliar="${historia.exam_auxiliar}"
+                      data-laboratorio="${historia.laboratorio}" data-otros="${historia.otros}"
+                      data-diag_definitivo="${historia.diag_definitivo}"
+                      data-tratamiento="${historia.tratamiento}">
+                      Editar
+                    </button>
+                    <button class="btn btn-danger btn-small btnEliminar" data-id="${historia.id}" data-toggle="modal" data-target="#modalEliminar">
+                      Eliminar
+                    </button>
+                    <?php } ?>
                   </td>
                 </tr>
               `;

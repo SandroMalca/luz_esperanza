@@ -5,10 +5,11 @@ date_default_timezone_set('America/Lima');
 
  	$fecha = date('Y-m-d');
 
-			$conexion -> query("insert into logueo (user, password, acceso) values ('".$_POST['user']."', '".$_POST['password']."', '".$_POST['acceso']."')") or die($conexion->error);
+			$conexion -> query("insert into logueo (user, password, acceso) values ('".$_POST['user']."', '".$_POST['password']."', 
+			'".$_POST['acceso']."')") or die($conexion->error);
 
 
-			header("Location: ../users.php?success=Usuario ingresado correctamente");
+			header("Location: ../users.php");
 
 		} else {
 			header("Location: ../users.php?error=Favor de llenar todos los campos obligatorios");

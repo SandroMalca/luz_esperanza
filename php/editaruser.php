@@ -11,7 +11,6 @@ try {
         where id=".$_POST['iduser']); 
 
     $response['success'] = true;
-    $response['message'] = 'Usuario actualizado correctamente';
 } catch (Exception $e) {
     $response['message'] = 'Error al actualizar el usuario: ' . $e->getMessage();
 }

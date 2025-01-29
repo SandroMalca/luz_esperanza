@@ -86,7 +86,7 @@ $resultado = $conexion->query("SELECT
 								<span>
 									Tipo Documento: <?php echo $mostrar['tipodoc'] ?><br>
 									Nro. Doc: <?php echo $mostrar['nrodoc'] ?> <br>
-									Fec. Nacimiento: <?php echo date('d-m-Y', strtotime($mostrar['fec_nac'])) ?> (Edad: <?php echo $mostrar['edad'] ?>) <br>
+									Fec. Nacimiento: <?php echo date('d-m-Y', strtotime($mostrar['fec_nac'])) ?> (Edad: <?php echo $mostrar['edad'] ?> años) <br>
 									Estado Civil: <?php echo $mostrar['estado_civil'] ?> <br>
 									Sexo: <?php echo $mostrar['sexo'] ?> <br>
 								</span>
@@ -211,7 +211,7 @@ $resultado = $conexion->query("SELECT
 						<input type="hidden" name="id_tipopersona" value="2">
 
 						<br>
-						<span style="font-weight: bold;">EXPLORACIÓN FÍSICA:</span>
+						<span style="font-weight: bold;">SIGNOS VITALES:</span>
 						<br>
 						<div>
 							<label for="pad">Presión Arterial Diastólica (PAD)</label>
@@ -330,7 +330,7 @@ $resultado = $conexion->query("SELECT
 						<input type="hidden" name="id_tipopersona" value="2">
 
 						<br>
-						<span style="font-weight: bold;">EXPLORACIÓN FÍSICA:</span>
+						<span style="font-weight: bold;">SIGNOS VITALES:</span>
 						<br>
 						<div>
 							<label for="padEdit">Presión Arterial Diastólica (PAD)</label>

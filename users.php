@@ -64,7 +64,10 @@ if ($varsesion != 'Superadmin') {
       <div class="row">
         <div class="col-12 col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
           <div class="container">
-            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar..."> &nbsp; &nbsp; <a href="" data-toggle="modal" data-target="#exampleModalUser"><img src="img/cliente.jpg" alt="" id="icono"></a>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar..."> &nbsp; &nbsp; 
+            <button class="btn btn-primary" style="background-color:rgb(41, 182, 111);border-color:transparent;" data-toggle="modal" data-target="#exampleModalUser">
+                <i class="fa fa-user-plus" style="font-size: 1.5em;" aria-hidden="true"></i>
+            </button>
             <br><br>
             <table id="myTable">
               <tr class="header">
@@ -105,26 +108,22 @@ if ($varsesion != 'Superadmin') {
                 <th style="width:40%;">Acciones</th>
               </tr>
               <?php
-              $resultadoDoctor = $conexion->query("select persona.*, YEAR(CURDATE())-YEAR(persona.fec_nac) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(persona.fec_nac,'%m-%d'), 0 , -1 ) as edad, tipo_doc.nombre as tipodoc from persona LEFT JOIN tipo_doc on tipo_doc.id=persona.id_tipodoc where persona.id_tipopersona='1' ORDER BY ape1, ape2, nombre ASC");
+              $resultadoDoctor = $conexion->query("select id, nombre, ape1, ape2, cmp, especialidad from persona where id_tipopersona='1' ORDER BY ape1, ape2, nombre ASC");
               while ($mostrarDoctor = mysqli_fetch_assoc($resultadoDoctor)) {
               ?>
                 <tr>
                   <td>
-                    <span id="nombre"><?php echo $mostrarDoctor['ape1'] ?> <?php echo $mostrarDoctor['ape2'] ?>, <?php echo $mostrarDoctor['nombre'] ?> </span><br>
+                    <span id="nombre"><?php echo $mostrarDoctor['nombre'] ?> <?php echo $mostrarDoctor['ape1'] ?> <?php echo $mostrarDoctor['ape2'] ?></span><br>
                     <span id="datos">
-                      Tipo Documento: <?php echo $mostrarDoctor['tipodoc'] ?><br>
-                      Nro. Doc: <?php echo $mostrarDoctor['nrodoc'] ?> <br>
-                      Fec. Nacimiento: <?php echo date('d-m-Y', strtotime($mostrarDoctor['fec_nac'])) ?> (Edad: <?php echo $mostrarDoctor['edad'] ?> años) <br>
-                      Sexo: <?php echo $mostrarDoctor['sexo'] ?> <br>
+                      CMP: <?php echo $mostrarDoctor['cmp'] ?><br>
                       Especialidad: <?php echo $mostrarDoctor['especialidad'] ?> <br>
                     </span>
                   </td>
                   <td>
                     <button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" data-id="<?php echo $mostrarDoctor['id'] ?>"
                       data-nombre="<?php echo $mostrarDoctor['nombre'] ?>" data-ape1="<?php echo $mostrarDoctor['ape1'] ?>"
-                      data-ape2="<?php echo $mostrarDoctor['ape2'] ?>" data-nrodoc="<?php echo $mostrarDoctor['nrodoc'] ?>"
-                      data-tipodoc="<?php echo $mostrarDoctor['id_tipodoc'] ?>" data-fecnac="<?php echo $mostrarDoctor['fec_nac'] ?>"
-                      data-sexo="<?php echo $mostrarDoctor['sexo'] ?>" data-especialidad="<?php echo $mostrarDoctor['especialidad'] ?>"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                      data-ape2="<?php echo $mostrarDoctor['ape2'] ?>" data-cmp="<?php echo $mostrarDoctor['cmp'] ?>"
+                      data-especialidad="<?php echo $mostrarDoctor['especialidad'] ?>"><i class="fa fa-pencil" aria-hidden="true"></i></button>
                     <button class="btn btn-danger btn-small btnEliminarDoctor" data-toggle="modal" data-target="#modalEliminarDoctor" data-id="<?php echo $mostrarDoctor['id']; ?>"><i class="fa fa-trash" aria-hidden="true"></i></button>
                   </td>
                 </tr>
@@ -139,7 +138,7 @@ if ($varsesion != 'Superadmin') {
     </div>
   </section>
 
-  <!-- Modal Ingresar -->
+  <!-- Modal Ingresar Doctor -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -158,42 +157,17 @@ if ($varsesion != 'Superadmin') {
             <br>
             <div>
               <label for="ape1">Apellido Paterno <span style="color: red">*</span></label>
-              <input type="text" name="ape1" id="ape1" placeholder="Apellido 1" class="form-control" required>
+              <input type="text" name="ape1" id="ape1" placeholder="Apellido Paterno" class="form-control" required>
             </div>
             <br>
             <div>
               <label for="ape2">Apellido Materno</label>
-              <input type="text" name="ape2" id="ape2" placeholder="Apellido 2" class="form-control">
+              <input type="text" name="ape2" id="ape2" placeholder="Apellido Materno" class="form-control">
             </div>
             <br>
             <div>
-              <label for="id_tipodoc">Tipo Documento</label>
-              <select name="id_tipodoc" id="id_tipodoc" class="form-control">
-                <?php
-                $resultado = $conexion->query("select * from tipo_doc");
-                while ($f = mysqli_fetch_array($resultado)) {
-                ?>
-                  <option value="<?php echo $f['id'] ?>"><?php echo $f['nombre'] ?></option>
-                <?php } ?>
-              </select>
-            </div>
-            <br>
-            <div>
-              <label for="nrodoc">Nro. Documento</label>
-              <input type="text" name="nrodoc" id="nrodoc" placeholder="Nro. Documento" class="form-control">
-            </div>
-            <br>
-            <div>
-              <label for="fec_nac">Fecha de Nacimiento</label>
-              <input type="date" name="fec_nac" id="fec_nac" class="form-control">
-            </div>
-            <br>
-            <div>
-              <label for="sexo">Sexo</label>
-              <select name="sexo" id="sexo" class="form-control">
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-              </select>
+              <label for="cmp">CMP</label>
+              <input type="text" name="cmp" id="cmp" placeholder="CMP" class="form-control" maxlength="6">
             </div>
             <br>
             <div>
@@ -202,7 +176,6 @@ if ($varsesion != 'Superadmin') {
             </div>
             <br>
             <input type="hidden" name="id_tipopersona" value="1">
-            <input type="hidden" name="estado_civil" value="">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -213,8 +186,44 @@ if ($varsesion != 'Superadmin') {
     </div>
   </div>
 
-
   <!-- Modal Ingresar User-->
+  <div class="modal fade" id="exampleModalUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalUserLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form action="php/ingresaruser.php" method="post" id="formIngresarUser">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalUserLabel">Ingresar Usuario</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="user">Usuario <span style="color: red">*</span></label>
+              <input type="text" name="user" id="user" placeholder="Usuario" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Contraseña <span style="color: red">*</span></label>
+              <input type="password" name="password" id="password" placeholder="Contraseña" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="acceso">Tipo de Acceso</label>
+              <select name="acceso" id="acceso" class="form-control">
+                <option value="Superadmin">Administrador</option>
+                <option value="Admin">Doctor</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar User-->
   <div class="modal fade" id="modalEditarUser" tabindex="-1" role="dialog" aria-labelledby="modalEditarUserLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -250,7 +259,7 @@ if ($varsesion != 'Superadmin') {
   </div>
 
 
-  <!-- Modal Editar -->
+  <!-- Modal Editar Doctor -->
   <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -269,43 +278,18 @@ if ($varsesion != 'Superadmin') {
             </div>
             <br>
             <div>
-              <label for="ape1Edit">Apellido 1 <span style="color: red">*</span></label>
-              <input type="text" name="ape1" id="ape1Edit" placeholder="Apellido 1" class="form-control">
+              <label for="ape1Edit">Apellido Paterno <span style="color: red">*</span></label>
+              <input type="text" name="ape1" id="ape1Edit" placeholder="Apellido Paterno" class="form-control">
             </div>
             <br>
             <div>
-              <label for="ape2Edit">Apellido 2</label>
-              <input type="text" name="ape2" id="ape2Edit" placeholder="Apellido 2" class="form-control">
+              <label for="ape2Edit">Apellido Materno</label>
+              <input type="text" name="ape2" id="ape2Edit" placeholder="Apellido Materno" class="form-control">
             </div>
             <br>
             <div>
-              <label for="id_tipodocEdit">Tipo Documento</label>
-              <select name="id_tipodoc" id="id_tipodocEdit" class="form-control">
-                <?php
-                $resultado = $conexion->query("select * from tipo_doc");
-                while ($f = mysqli_fetch_array($resultado)) {
-                ?>
-                  <option value="<?php echo $f['id'] ?>"><?php echo $f['nombre'] ?></option>
-                <?php } ?>
-              </select>
-            </div>
-            <br>
-            <div>
-              <label for="nrodocEdit">Nro. Documento</label>
-              <input type="text" name="nrodoc" id="nrodocEdit" placeholder="Nro. Documento" class="form-control">
-            </div>
-            <br>
-            <div>
-              <label for="fec_nacEdit">Fecha de Nacimiento</label>
-              <input type="date" name="fec_nac" id="fec_nacEdit" class="form-control">
-            </div>
-            <br>
-            <div>
-              <label for="sexoEdit">Sexo</label>
-              <select name="sexo" id="sexoEdit" class="form-control">
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-              </select>
+              <label for="cmpEdit">CMP</label>
+              <input type="text" name="cmp" id="cmpEdit" placeholder="CMP" class="form-control" maxlength="6">
             </div>
             <br>
             <div>
@@ -314,7 +298,6 @@ if ($varsesion != 'Superadmin') {
             </div>
             <br>
             <input type="hidden" name="id_tipopersona" value="1">
-            <input type="hidden" name="estado_civil" value="">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -439,21 +422,20 @@ if ($varsesion != 'Superadmin') {
             tablaHTML += `
                 <tr>
                   <td>
-                    <span id="nombre">${doctor.ape1} ${doctor.ape2}, ${doctor.nombre}</span><br>
+                    <span id="nombre">${doctor.nombre} ${doctor.ape1} ${doctor.ape2} </span><br>
                     <span id="datos">
-                      Tipo Documento: ${doctor.tipodoc}<br>
-                      Nro. Doc: ${doctor.nrodoc}<br>
-                      Fec. Nacimiento: ${formatDate(doctor.fec_nac)} (Edad: ${doctor.edad} años)<br>       
-                      Sexo: ${doctor.sexo}<br>
-                      Especialidad: ${doctor.especialidad}<br>                     
+                      CMP: ${doctor.cmp}<br>
+                      Especialidad: ${doctor.especialidad}<br>
                     </span>
                   </td>
                   <td>
                     <button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" 
-                      data-id="${doctor.id}" data-nombre="${doctor.nombre}" data-ape1="${doctor.ape1}" 
-                      data-ape2="${doctor.ape2}" data-nrodoc="${doctor.nrodoc}" data-tipodoc="${doctor.id_tipodoc}" 
-                      data-fecnac="${doctor.fec_nac}" data-sexo="${doctor.sexo}"
-                      data-especialidad="${doctor.especialidad}" >
+                      data-id="${doctor.id}" 
+                      data-nombre="${doctor.nombre}" 
+                      data-ape1="${doctor.ape1}" 
+                      data-ape2="${doctor.ape2}" 
+                      data-cmp="${doctor.cmp}" 
+                      data-especialidad="${doctor.especialidad}">
                       <i class="fa fa-pencil" aria-hidden="true"></i>
                     </button>
                     <button class="btn btn-danger btn-small btnEliminarDoctor" data-toggle="modal" data-target="#modalEliminarDoctor" 
@@ -467,7 +449,6 @@ if ($varsesion != 'Superadmin') {
 
           $("#myTable2").html(tablaHTML);
           activarEventosDoctores();
-
         });
       }
 
@@ -503,10 +484,7 @@ if ($varsesion != 'Superadmin') {
           $("#nombreEdit").val($(this).data('nombre'));
           $("#ape1Edit").val($(this).data('ape1'));
           $("#ape2Edit").val($(this).data('ape2'));
-          $("#nrodocEdit").val($(this).data('nrodoc'));
-          $("#id_tipodocEdit").val($(this).data('tipodoc'));
-          $("#fec_nacEdit").val($(this).data('fecnac'));
-          $("#sexoEdit").val($(this).data('sexo'));
+          $("#cmpEdit").val($(this).data('cmp'));
           $("#especialidadEdit").val($(this).data('especialidad'));
         });
       }
@@ -569,8 +547,8 @@ if ($varsesion != 'Superadmin') {
             $('#modalEditar').modal('hide');
             actualizarTablaDoctores();
           }
-        }).fail(function() {
-          alert('Error al procesar la solicitud');
+        }).fail(function(xhr) {
+          alert('Error al procesar la solicitud: ' + xhr.responseText);
         });
       });
       // Función para formatear fecha
@@ -579,6 +557,30 @@ if ($varsesion != 'Superadmin') {
 				var parts = dateString.split('-');
 				return parts[2] + '-' + parts[1] + '-' + parts[0];
 			}
+
+      // Manejar el formulario de ingreso de usuario
+      $("#formIngresarUser").on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+          url: 'php/ingresaruser.php',
+          method: 'POST',
+          data: $(this).serialize(),
+          dataType: 'json'
+        }).done(function(response) {
+          if (response.success) {
+            $('#exampleModalUser').modal('hide');
+            actualizarTablaUsuarios();
+            $("#formIngresarUser")[0].reset();
+          }
+        }).fail(function(xhr) {
+          alert('Error al procesar la solicitud: ' + xhr.responseText);
+        });
+      });
+
+      // Limpiar formulario cuando se cierra el modal
+      $('#exampleModalUser').on('hidden.bs.modal', function () {
+        $("#formIngresarUser")[0].reset();
+      });
     });
   </script>
 

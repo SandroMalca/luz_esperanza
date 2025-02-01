@@ -2,27 +2,28 @@
 include "./conexion.php";
 date_default_timezone_set('America/Lima');
 
-// Obtener todos los clientes
-$resultado = $conexion->query("
-    SELECT 
-        p.*,
-        ef.pad, ef.pas, ef.spo2, ef.fc, ef.temp, ef.peso, ef.talla,
-        DATE_FORMAT(p.fec_nac, '%Y-%m-%d') as fec_nac,
-        YEAR(CURDATE())-YEAR(p.fec_nac) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(p.fec_nac,'%m-%d'), 0, -1) as edad,
-        tipo_doc.nombre as tipodoc
-    FROM persona p
-    LEFT JOIN exploracion_fisica ef ON p.id = ef.id_historia
-    LEFT JOIN tipo_doc on tipo_doc.id=p.id_tipodoc
-    WHERE p.id_tipopersona = 2 AND p.status = 1
-    ORDER BY p.id DESC
-") or die($conexion->error);
-
 $clientes = array();
-while($f = mysqli_fetch_array($resultado)) {
-    $clientes[] = $f;
+$resultado = $conexion->query("SELECT 
+    persona.*, 
+    YEAR(CURDATE())-YEAR(persona.fec_nac) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(persona.fec_nac,'%m-%d'), 0, -1) as edad,
+    tipo_doc.nombre as tipodoc,
+    exploracion_fisica.pad,
+    exploracion_fisica.pas,
+    exploracion_fisica.spo2,
+    exploracion_fisica.fc,
+    exploracion_fisica.temp,
+    exploracion_fisica.peso,
+    exploracion_fisica.talla
+    FROM persona 
+    LEFT JOIN tipo_doc ON tipo_doc.id=persona.id_tipodoc 
+    LEFT JOIN exploracion_fisica ON exploracion_fisica.id_historia=persona.id
+    WHERE persona.id_tipopersona='2' AND persona.status = 1
+    ORDER BY persona.id DESC");
+
+while ($cliente = mysqli_fetch_assoc($resultado)) {
+    $clientes[] = $cliente;
 }
 
-// Enviar respuesta JSON
 header('Content-Type: application/json');
 echo json_encode($clientes);
 ?> 

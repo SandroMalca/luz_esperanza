@@ -2,20 +2,23 @@
 include "./conexion.php";
 date_default_timezone_set('America/Lima');
 
-$response = array();
+$response = array('success' => false, 'message' => '');
 
-if(isset($_POST['id'])){
-    // En lugar de eliminar, actualizamos el status a 0
-    $conexion->query("UPDATE persona SET status = '0' WHERE id=".$_POST['id']) 
-    or die($conexion->error);
-    
+try {
+    if (!isset($_POST['id'])) {
+        throw new Exception('ID no proporcionado');
+    }
+
+    // Actualizar el status a 0 en lugar de eliminar
+    $conexion->query("UPDATE persona SET status = 0 WHERE id = " . $_POST['id']) 
+        or throw new Exception($conexion->error);
+
     $response['success'] = true;
     
-} else {
-    $response['success'] = false;
-    $response['message'] = 'Error al desactivar el cliente';
+} catch (Exception $e) {
+    $response['message'] = 'Error al desactivar el cliente: ' . $e->getMessage();
 }
 
+header('Content-Type: application/json');
 echo json_encode($response);
-
- ?>
+?>

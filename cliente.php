@@ -148,7 +148,7 @@ $resultado = $conexion->query("SELECT
 	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
-				<form action="php/ingresarcliente.php" method="post">
+				<form id="formIngresar" method="post">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel">Ingresar Paciente</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -418,59 +418,50 @@ $resultado = $conexion->query("SELECT
 		}
 
 		$(document).ready(function() {
-			// Inicializar la validación para ambos formularios
-			actualizarValidacionDocumento(document.getElementById('id_tipodoc'), 'nrodoc');
-			actualizarValidacionDocumento(document.getElementById('id_tipodocEdit'), 'nrodocEdit');
-
-			// Función para limpiar todos los campos del formulario de edición
-			function limpiarFormularioEdicion() {
-				$("#nombreEdit").val('');
-				$("#ape1Edit").val('');
-				$("#ape2Edit").val('');
-				$("#nrodocEdit").val('');
-				$("#id_tipodocEdit").val('');
-				$("#fec_nacEdit").val('');
-				$("#estado_civilEdit").val('');
-				$("#sexoEdit").val('');
-				$("#padEdit").val('');
-				$("#pasEdit").val('');
-				$("#spo2Edit").val('');
-				$("#fcEdit").val('');
-				$("#tempEdit").val('');
-				$("#pesoEdit").val('');
-				$("#tallaEdit").val('');
-			}
-
-			// Evento que se dispara cuando se abre el modal de edición
-			$('#modalEditar').on('show.bs.modal', function(e) {
-				// Primero limpiamos todos los campos
-				limpiarFormularioEdicion();
-
-				// Luego cargamos los datos del paciente
-				var button = $(e.relatedTarget);
-				var id_tipodoc = button.data('id_tipodoc') || 1;
-				$("#idEdit").val(button.data('id'));
-				$("#nombreEdit").val(button.data('nombre'));
-				$("#ape1Edit").val(button.data('ape1'));
-				$("#ape2Edit").val(button.data('ape2'));
-				$("#nrodocEdit").val(button.data('nrodoc'));
-				$("#id_tipodocEdit").val(id_tipodoc);
-				$("#fec_nacEdit").val(button.data('fec_nac'));
-				$("#estado_civilEdit").val(button.data('estado_civil'));
-				$("#sexoEdit").val(button.data('sexo'));
-				$("#padEdit").val(button.data('pad'));
-				$("#pasEdit").val(button.data('pas'));
-				$("#spo2Edit").val(button.data('spo2'));
-				$("#fcEdit").val(button.data('fc'));
-				$("#tempEdit").val(button.data('temp'));
-				$("#pesoEdit").val(button.data('peso'));
-				$("#tallaEdit").val(button.data('talla'));
-
-				// Actualizar la validación del documento según el tipo seleccionado
-				actualizarValidacionDocumento(document.getElementById('id_tipodocEdit'), 'nrodocEdit');
+			// Variables para controlar la actualización automática
+			let actualizacionAutomatica = true;
+			let ultimaActualizacion = new Date().getTime();
+			let actualizacionPendiente = false;
+			
+			// Manejar el envío del formulario de ingreso
+			$("#formIngresar").on('submit', function(e) {
+				e.preventDefault();
+				actualizacionAutomatica = false; // Desactivar actualización automática temporalmente
+				
+				$.ajax({
+					url: 'php/ingresarcliente.php',
+					method: 'POST',
+					data: $(this).serialize(),
+					dataType: 'json'
+				}).done(function(response) {
+					if (response.success) {
+						$('#exampleModal').modal('hide');
+						$("#formIngresar")[0].reset();
+						actualizacionPendiente = true;
+						actualizarTablaClientes(true); // Forzar actualización inmediata
+						setTimeout(function() {
+							actualizacionAutomatica = true;
+							actualizacionPendiente = false;
+						}, 5000);
+					} else {
+						alert('Error al ingresar el cliente: ' + response.message);
+					}
+				}).fail(function(xhr) {
+					console.error('Error:', xhr.responseText);
+					alert('Error al procesar la solicitud. Por favor, inténtelo de nuevo.');
+				});
 			});
+
 			// Función para actualizar la tabla de clientes
-			function actualizarTablaClientes() {
+			function actualizarTablaClientes(forzar = false) {
+				if (!actualizacionAutomatica && !forzar) return; // No actualizar si está desactivado
+				if (actualizacionPendiente && !forzar) return; // No actualizar si hay una actualización pendiente
+				
+				const ahora = new Date().getTime();
+				if (!forzar && ahora - ultimaActualizacion < 4000) return; // Evitar actualizaciones muy frecuentes
+				
+				ultimaActualizacion = ahora;
+				
 				$.ajax({
 					url: 'php/obtener_clientes.php',
 					method: 'GET',
@@ -565,6 +556,27 @@ $resultado = $conexion->query("SELECT
 					fila = $(this).closest('tr');
 				});
 
+				$(".eliminarFila").click(function() {
+					$.ajax({
+						url: 'php/eliminarcliente.php',
+						method: 'POST',
+						data: {
+							id: idEliminar
+						},
+						dataType: 'json'
+					}).done(function(response) {
+						if (response.success) {
+							$('#modalEliminar').modal('hide');
+							actualizarTablaClientes(true); // Forzar actualización inmediata
+						} else {
+							alert('Error al desactivar el cliente: ' + response.message);
+						}
+					}).fail(function(xhr) {
+						console.error('Error:', xhr.responseText);
+						alert('Error al procesar la solicitud. Por favor, inténtelo de nuevo.');
+					});
+				});
+
 				$(".btnEditar").click(function() {
 					var id = $(this).data('id');
 					$("#idEdit").val(id);
@@ -592,76 +604,36 @@ $resultado = $conexion->query("SELECT
 			// Activar eventos iniciales
 			activarEventosBotones();
 
-			// Configurar actualización cada 5 segundos
-			setInterval(actualizarTablaClientes, 5000);
+			// Configurar intervalo de actualización
+			setInterval(function() {
+				actualizarTablaClientes(false);
+			}, 5000);
 
-			// Eliminar cliente
-			$(".eliminarFila").click(function() {
-				$.ajax({
-					url: 'php/eliminarcliente.php',
-					method: 'POST',
-					data: {
-						id: idEliminar
-					},
-					dataType: 'json'
-				}).done(function(response) {
-					if (response.success) {
-						$('#modalEliminar').modal('hide');
-						actualizarTablaClientes();
-					} else {
-						alert('Error al desactivar el cliente: ' + response.message);
-					}
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					console.error('Error:', textStatus, errorThrown);
-					alert('Error al procesar la solicitud. Por favor, inténtelo de nuevo.');
-				});
+			// Limpiar formulario cuando se cierra el modal
+			$('#exampleModal').on('hidden.bs.modal', function () {
+				$("#formIngresar")[0].reset();
 			});
 
-			// Manejar el envío del formulario de edición
-			$("#formEditar").on('submit', function(e) {
-				e.preventDefault();
-				$.ajax({
-					url: 'php/editarcliente.php',
-					method: 'POST',
-					data: $(this).serialize(),
-					dataType: 'json'
-				}).done(function(response) {
-					if (response.success) {
-						$('#modalEditar').modal('hide');
-						actualizarTablaClientes();
-					}
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					console.error('Error:', textStatus, errorThrown);
-					alert('Error al procesar la solicitud. Por favor, inténtelo de nuevo.');
-				});
-			});
+			function myFunction() {
+				var input, filter, table, tr, td, i, txtValue;
+				input = document.getElementById("myInput");
+				filter = input.value.toUpperCase();
+				table = document.getElementById("myTable");
+				tr = table.getElementsByTagName("tr");
 
-			// Función para formatear fecha
-			function formatDate(dateString) {
-				if (!dateString) return '';
-				var parts = dateString.split('-');
-				return parts[2] + '-' + parts[1] + '-' + parts[0];
-			}
-		});
-
-		function myFunction() {
-			var input, filter, table, tr, td, i, txtValue;
-			input = document.getElementById("myInput");
-			filter = input.value.toUpperCase();
-			table = document.getElementById("myTable");
-			tr = table.getElementsByTagName("tr");
-
-			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[0];
-				if (td) {
-					txtValue = td.textContent || td.innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
-						tr[i].style.display = "";
-					} else {
-						tr[i].style.display = "none";
+				for (i = 0; i < tr.length; i++) {
+					td = tr[i].getElementsByTagName("td")[0];
+					if (td) {
+						txtValue = td.textContent || td.innerText;
+						if (txtValue.toUpperCase().indexOf(filter) > -1) {
+							tr[i].style.display = "";
+						} else {
+							tr[i].style.display = "none";
+						}
 					}
 				}
-			}}
+			}
+		});
 	</script>
 </body>
 

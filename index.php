@@ -69,6 +69,7 @@ $mostrarHistoriaMes = mysqli_fetch_assoc($resultadoHistoriaMes);
 	<meta name="description" content="Consultorio Medicos Especializados Luz de Esperanza">
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/estilos.css">
+	<link rel="icon" href="img/LOGO.png" type="image/x-icon">
 </head>
 
 <body>

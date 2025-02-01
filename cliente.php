@@ -86,7 +86,8 @@ $resultado = $conexion->query("SELECT
 								<span>
 									Tipo Documento: <?php echo $mostrar['tipodoc'] ?><br>
 									Nro. Doc: <?php echo $mostrar['nrodoc'] ?> <br>
-									Fec. Nacimiento: <?php echo date('d-m-Y', strtotime($mostrar['fec_nac'])) ?> (Edad: <?php echo $mostrar['edad'] ?> años) <br>
+									Fec. Nac: <?php echo ($mostrar['fec_nac'] && $mostrar['fec_nac'] != '0000-00-00') ? date('d-m-Y', strtotime($mostrar['fec_nac'])) : ''; ?> 
+                					<?php echo ($mostrar['edad'] && $mostrar['edad'] > 0) ? '(Edad: ' . $mostrar['edad'] . ' años)' : ''; ?> <br>
 									Estado Civil: <?php echo $mostrar['estado_civil'] ?> <br>
 									Sexo: <?php echo $mostrar['sexo'] ?> <br>
 								</span>
@@ -172,7 +173,7 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="id_tipodoc">Tipo Documento</label>
-							<select name="id_tipodoc" id="id_tipodoc" class="form-control">
+							<select name="id_tipodoc" id="id_tipodoc" class="form-control" onchange="actualizarValidacionDocumento(this, 'nrodoc')">
 								<?php
 								$resultado = $conexion->query("select * from tipo_doc");
 								while ($f = mysqli_fetch_array($resultado)) {
@@ -288,7 +289,7 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="id_tipodocEdit">Tipo Documento</label>
-							<select name="id_tipodoc" id="id_tipodocEdit" class="form-control">
+							<select name="id_tipodoc" id="id_tipodocEdit" class="form-control" onchange="actualizarValidacionDocumento(this, 'nrodocEdit')">
 								<?php
 								$resultado = $conexion->query("SELECT * FROM tipo_doc");
 								while ($f = mysqli_fetch_array($resultado)) {
@@ -303,7 +304,7 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="nrodocEdit">Nro. Documento</label>
-							<input type="text" name="nrodoc" id="nrodocEdit" placeholder="Nro. Documento" error="El número de documento debe tener 8 dígitos" minlength="8" maxlength="8" pattern="[0-9]{8}" class="form-control" empty>
+							<input type="text" name="nrodoc" id="nrodocEdit" placeholder="Nro. Documento" class="form-control" minlength="8" maxlength="8" pattern="[0-9]{8}">
 						</div>
 						<br>
 						<div>
@@ -402,7 +403,25 @@ $resultado = $conexion->query("SELECT
 	<script src="js/popper.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 	<script>
+		// Función para actualizar la validación del documento según el tipo
+		function actualizarValidacionDocumento(selectElement, inputId) {
+			const nroDocInput = document.getElementById(inputId);
+			if (selectElement.value === "2") { // Si es Carnet de Extranjería
+				nroDocInput.maxLength = "20";
+				nroDocInput.minLength = "0";
+				nroDocInput.pattern = ".*";
+			} else { // Para DNI y otros
+				nroDocInput.maxLength = "8";
+				nroDocInput.minLength = "8";
+				nroDocInput.pattern = "[0-9]{8}";
+			}
+		}
+
 		$(document).ready(function() {
+			// Inicializar la validación para ambos formularios
+			actualizarValidacionDocumento(document.getElementById('id_tipodoc'), 'nrodoc');
+			actualizarValidacionDocumento(document.getElementById('id_tipodocEdit'), 'nrodocEdit');
+
 			// Función para limpiar todos los campos del formulario de edición
 			function limpiarFormularioEdicion() {
 				$("#nombreEdit").val('');
@@ -446,6 +465,9 @@ $resultado = $conexion->query("SELECT
 				$("#tempEdit").val(button.data('temp'));
 				$("#pesoEdit").val(button.data('peso'));
 				$("#tallaEdit").val(button.data('talla'));
+
+				// Actualizar la validación del documento según el tipo seleccionado
+				actualizarValidacionDocumento(document.getElementById('id_tipodocEdit'), 'nrodocEdit');
 			});
 			// Función para actualizar la tabla de clientes
 			function actualizarTablaClientes() {
@@ -470,7 +492,8 @@ $resultado = $conexion->query("SELECT
 										<span>
 											Tipo Documento: ${cliente.tipodoc}<br>
 											Nro. Doc: ${cliente.nrodoc}<br>
-											Fec. Nacimiento: ${formatDate(cliente.fec_nac)} (Edad: ${cliente.edad} años)<br>
+											Fec. Nac: ${(cliente.fec_nac && cliente.fec_nac != '0000-00-00') ? formatDate(cliente.fec_nac) : ''} 
+											${(cliente.edad && cliente.edad > 0) ? '(Edad: ' + cliente.edad + ' años)' : ''}<br>
 											Estado Civil: ${cliente.estado_civil}<br>
 											Sexo: ${cliente.sexo}<br>
 										</span>
@@ -638,8 +661,7 @@ $resultado = $conexion->query("SELECT
 						tr[i].style.display = "none";
 					}
 				}
-			}
-		}
+			}}
 	</script>
 </body>
 

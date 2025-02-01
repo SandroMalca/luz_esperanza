@@ -1,0 +1,881 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 31-01-2025 a las 23:34:11
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `luz_esperanza`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `egreso`
+--
+
+CREATE TABLE `egreso` (
+  `id` int(10) NOT NULL,
+  `fecha` date NOT NULL,
+  `egreso` decimal(10,2) NOT NULL,
+  `descripcion` varchar(750) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `exploracion_fisica`
+--
+
+CREATE TABLE `exploracion_fisica` (
+  `id` int(10) NOT NULL,
+  `id_historia` int(10) NOT NULL,
+  `id_tratamiento` int(10) NOT NULL,
+  `pad` int(100) NOT NULL,
+  `pas` int(100) NOT NULL,
+  `spo2` int(100) NOT NULL,
+  `fc` int(100) NOT NULL,
+  `temp` int(100) NOT NULL,
+  `peso` int(100) NOT NULL,
+  `talla` int(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `exploracion_fisica`
+--
+
+INSERT INTO `exploracion_fisica` (`id`, `id_historia`, `id_tratamiento`, `pad`, `pas`, `spo2`, `fc`, `temp`, `peso`, `talla`) VALUES
+(1, 15, 0, 0, 0, 0, 0, 0, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historia`
+--
+
+CREATE TABLE `historia` (
+  `id` int(10) NOT NULL,
+  `fecha` date NOT NULL,
+  `id_cliente` int(10) NOT NULL,
+  `motivo` varchar(750) NOT NULL,
+  `enfermedad_actual` varchar(750) NOT NULL,
+  `antec_familiar` varchar(750) NOT NULL,
+  `antec_personales` varchar(750) DEFAULT NULL,
+  `exam_fisico` varchar(750) NOT NULL,
+  `diag_presuntivo` varchar(750) NOT NULL,
+  `exam_auxiliar` varchar(750) NOT NULL,
+  `laboratorio` varchar(750) NOT NULL,
+  `otros` varchar(750) NOT NULL,
+  `diag_definitivo` varchar(750) NOT NULL,
+  `tratamiento` varchar(750) NOT NULL,
+  `fec_creacion` date NOT NULL,
+  `id_doctor` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `lista`
+--
+
+CREATE TABLE `lista` (
+  `id` int(10) NOT NULL,
+  `nombre` varchar(1500) NOT NULL,
+  `descripcion` varchar(1500) NOT NULL,
+  `cantidad` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `logueo`
+--
+
+CREATE TABLE `logueo` (
+  `id` int(10) NOT NULL,
+  `user` varchar(150) NOT NULL,
+  `password` varchar(150) NOT NULL,
+  `acceso` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `logueo`
+--
+
+INSERT INTO `logueo` (`id`, `user`, `password`, `acceso`) VALUES
+(1, 'Admin', 'admin123', 'Superadmin'),
+(2, 'Doctor', 'doctor123', 'Admin');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `lote`
+--
+
+CREATE TABLE `lote` (
+  `id` int(10) NOT NULL,
+  `fec_ven` date NOT NULL,
+  `cantidad` int(10) NOT NULL,
+  `usado` int(10) NOT NULL,
+  `lote` varchar(150) NOT NULL,
+  `id_producto` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `lote`
+--
+
+INSERT INTO `lote` (`id`, `fec_ven`, `cantidad`, `usado`, `lote`, `id_producto`) VALUES
+(1, '2025-01-07', 20, 0, '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pago`
+--
+
+CREATE TABLE `pago` (
+  `id` int(10) NOT NULL,
+  `fecha` date NOT NULL,
+  `efectivo` decimal(10,2) NOT NULL,
+  `tarjeta` decimal(10,2) NOT NULL,
+  `descripcion` varchar(750) NOT NULL,
+  `id_cliente` int(10) NOT NULL,
+  `status` int(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `persona`
+--
+
+CREATE TABLE `persona` (
+  `id` int(10) NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `ape1` varchar(150) NOT NULL,
+  `ape2` varchar(150) DEFAULT NULL,
+  `telef` int(10) NOT NULL,
+  `nrodoc` varchar(50) DEFAULT NULL,
+  `id_tipodoc` int(10) DEFAULT NULL,
+  `fec_nac` date DEFAULT NULL,
+  `sexo` enum('Masculino','Femenino') DEFAULT NULL,
+  `estado_civil` enum('Soltero','Casado','Divorciado') DEFAULT NULL,
+  `id_tipopersona` int(10) NOT NULL,
+  `fecha` date NOT NULL,
+  `especialidad` varchar(100) DEFAULT NULL,
+  `status` int(1) NOT NULL,
+  `cmp` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `persona`
+--
+
+INSERT INTO `persona` (`id`, `nombre`, `ape1`, `ape2`, `telef`, `nrodoc`, `id_tipodoc`, `fec_nac`, `sexo`, `estado_civil`, `id_tipopersona`, `fecha`, `especialidad`, `status`, `cmp`) VALUES
+(1, 'Dr. Williams', 'Reyes', 'Gutierrez', 0, '', 0, '1969-12-31', '', '', 1, '2025-01-29', 'Medicina General', 0, 108398),
+(2, 'Dr. Orlando', 'Yslas', 'Ugaz', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Medicina General', 0, 15171),
+(3, 'Dr. Ysla', 'Ugas', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Cirugía General', 0, 108398),
+(4, 'Dr. Cesar', 'Vergel', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Cirugía General', 0, 22694),
+(5, 'Dr.', 'Toledo', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Gastroenterología ', 0, 0),
+(6, 'Dr. Augusto', 'Poma', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Endocrinología', 0, 17978),
+(7, 'Dr. Pool', 'Orellana', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Urología', 0, 37306),
+(8, 'Dr. Ricardo', 'Villa', 'Becerra', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Neurólogia', 0, 23123),
+(9, 'Dr. Jorge', 'Vattuone', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Neurólogia', 0, 0),
+(10, 'Lic. Raquel', 'Llanos', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Obstetricia', 0, 0),
+(11, 'Dr. Francisco', 'Ariza', 'Estrada', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Dermatología', 0, 17290),
+(12, 'Dr. Jorge', 'Siway', 'Arango', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Pediatría', 0, 7667),
+(13, 'Dr. Mario', 'Amaudaray', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Traumatología', 0, 0),
+(14, 'Dra. Roxana', 'Guaman', '', 0, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-29', 'Nutrición', 0, 4807);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `producto`
+--
+
+CREATE TABLE `producto` (
+  `id` int(10) NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `horario` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `producto`
+--
+
+INSERT INTO `producto` (`id`, `nombre`, `precio`, `horario`) VALUES
+(2, 'EKG', 80.00, '1,2,3,4,5'),
+(3, 'HOLTER', 130.00, '1,2,3,4,5'),
+(4, 'MAPA', 130.00, '1,2,3,4,5'),
+(5, 'CONSULTA + EKG', 120.00, '1,2,3,4,5'),
+(6, 'INTERCONSULTA O LEVANTAMIENTO', 60.00, '1,2,3,4,5'),
+(7, 'MAPEO CEREBRAL (ADULTO)', 300.00, '1,2,3,4,5'),
+(8, 'MAPEO CEREBRAL (NI?O)', 360.00, '1,2,3,4,5'),
+(9, 'ELECTROENCEFALOGRAMA PROLONGADO (ADULTO)', 300.00, '1,2,3,4,5'),
+(10, 'ELECTROENCEFALOGRAMA PROLONGADO (NI?O)', 360.00, '1,2,3,4,5'),
+(11, 'ELECTROMIOGRAFIA 4 EXTREMIDADES', 400.00, '1,2,3,4,5'),
+(12, 'ELECTROMIOGRAFIA 2 EXTREMIDADES', 300.00, '1,2,3,4,5'),
+(13, 'ELECTROMIOGRAFIA UNILATERAL', 300.00, '1,2,3,4,5'),
+(14, 'ELECTROMIOGRAFIA FACIAL', 300.00, '1,2,3,4,5'),
+(15, 'CONSULTA MEDICINA GENERAL', 25.00, '1,2,3,4,5'),
+(16, 'CONSULTA PEDIATRIA', 40.00, '1,4'),
+(17, 'CONSULTA NEUROLOGIA', 50.00, '1,2,3,4,5'),
+(18, 'CONSULTA NUTRICION', 40.00, '1,2,3,4,5'),
+(19, 'CONSULTA NEUMOLOGIA', 60.00, '1,2,3,4,5'),
+(20, 'CONSULTA DERMATOLOGIA', 60.00, '1,2,3,4,5'),
+(21, 'CONSULTA UROLOGIA', 50.00, '1,2,3,4,5'),
+(22, 'CONSULTA OBSTRETICIA', 30.00, '1,2,3,4,5'),
+(23, 'CONSULTA GINECOLOGIA', 50.00, '1,2,3,4,5'),
+(24, 'CONUSLTA PSICOLOGIA', 30.00, '1,2,3,4,5'),
+(25, 'CONSULTA GASTRO', 60.00, '1,2,3,4,5'),
+(26, 'CONSULTA OTORRINO', 50.00, '1,2,3,4,5'),
+(27, 'VARICES', 50.00, '2,4'),
+(28, 'CONSULTA OFTAMOLOGIA', 50.00, '1,2,3,4,5'),
+(29, 'CIRUJIA GENERAL', 50.00, '2,4'),
+(30, 'TERAPIA FISICA (5 X 150) (10X280)', 35.00, '1,2,3,4,5'),
+(31, 'CONSULTA TRAUMATOLOGIA', 50.00, '2,4'),
+(32, 'ECOGRAFIA ABDOMINAL COMPLETO', 70.00, '1,2,3,4,5'),
+(33, 'ECOGRAFIA ABDOMINAL SUPERIOR', 60.00, '1,2,3,4,5'),
+(34, 'ECOGRAFIA RENAL', 55.00, '1,2,3,4,5'),
+(35, 'ECOGRAFIA VESICO RENAL', 65.00, '1,2,3,4,5'),
+(36, 'ECOGRAFIA VESICOPROSTATICO', 60.00, '1,2,3,4,5'),
+(37, 'ECOGRAFIA PROSTATA', 55.00, '1,2,3,4,5'),
+(38, 'ECOGRAFIA PELVICO', 60.00, '1,2,3,4,5'),
+(39, 'ECOGRAFIA MAMA UNILATERAL', 50.00, '1,2,3,4,5'),
+(40, 'ECOGRAFIA MAMA BILATERAL', 90.00, '1,2,3,4,5'),
+(41, 'ECOGRAFIA TIROIDEO', 90.00, '1,2,3,4,5'),
+(42, 'ECOGRAFIA TESTICULAR', 95.00, '1,2,3,4,5'),
+(43, 'ECOGRAFIA PARTES BLANDAS', 55.00, '1,2,3,4,5'),
+(44, 'ECOGRAFIA INGUINAL UNILATERAL', 70.00, '1,2,3,4,5'),
+(45, 'ECOGRAFIA INGUINAL BILATERAL', 100.00, '1,2,3,4,5'),
+(46, 'ECOGRAFIA PARED ABDOMINAL (DESCARTE DE HERNIA)', 70.00, '1,2,3,4,5'),
+(47, 'ECOGRAFIA HOMBRO UNILATERAL', 70.00, '1,2,3,4,5'),
+(48, 'ECOGRAFIA DE CODO', 70.00, '1,2,3,4,5'),
+(49, 'ECOGRAFIA DE MANO Y MU?ECA', 70.00, '1,2,3,4,5'),
+(50, 'ECOGRAFIA DE RODILLA', 70.00, '1,2,3,4,5'),
+(51, 'ECOGRAFIA DE TOBILLO', 70.00, '1,2,3,4,5'),
+(52, 'ECOGRAFIA DE PIE', 70.00, '1,2,3,4,5'),
+(53, 'ECOGRAFIA TRANSVAGINAL', 60.00, '1,2,3,4,5'),
+(54, 'ECOGRAFIA DE OBSTETRICA', 80.00, '1,2,3,4,5'),
+(55, 'MAMOGRAFIA', 150.00, '1,2,4,5'),
+(56, 'RX CRANEO', 55.00, '1,2,3,4,5'),
+(57, 'RX SENOS PARANASALES (CADWELL WATERS)', 55.00, '1,2,3,4,5'),
+(58, 'RX HUESO PROPIO DE LA NARIZ', 55.00, '1,2,3,4,5'),
+(59, 'RX ATM ARTICULACI?N TEMPERO MANDIBULAR', 55.00, '1,2,3,4,5'),
+(60, 'RX LUMBO FLEXI?N Y EXTENSI?N', 85.00, '1,2,3,4,5'),
+(61, 'RX LUMBO SACRA', 62.00, '1,2,3,4,5'),
+(62, 'RX DORSO LUMBAR', 62.00, '1,2,3,4,5'),
+(63, 'RX DORSAL', 50.00, '1,2,3,4,5'),
+(64, 'RX CERVICAL', 50.00, '1,2,3,4,5'),
+(65, 'RX CERVICAL FUNCIONAL', 85.00, '1,2,3,4,5'),
+(66, 'RX CERVIAL FARINGEO', 48.00, '1,2,3,4,5'),
+(67, 'RX COLUMNA PANORAMICA', 80.00, '1,2,3,4,5'),
+(68, 'RX CLAVICULA BILATERAL', 65.00, '1,2,3,4,5'),
+(69, 'RX CLAVICULA UNILATERAL', 45.00, '1,2,3,4,5'),
+(70, 'RX HOMBRO BILATERAL', 65.00, '1,2,3,4,5'),
+(71, 'RX HOMBRO UNILATERAL', 45.00, '1,2,3,4,5'),
+(72, 'RX HUMERO BILATERAL', 70.00, '1,2,3,4,5'),
+(73, 'RX HUMERO UNILATERAL', 50.00, '1,2,3,4,5'),
+(74, 'RX CODO', 45.00, '1,2,3,4,5'),
+(75, 'RX CODO BILATERAL', 65.00, '1,2,3,4,5'),
+(76, 'RX ANTEBRAZO (RADIO CUBITO) UNILATERAL', 45.00, '1,2,3,4,5'),
+(77, 'RX ANTEBRAZO (RADIO CUBITO) BILATERAL', 70.00, '1,2,3,4,5'),
+(78, 'RX TORAX', 45.00, '1,2,3,4,5'),
+(79, 'RX TORAX APL', 55.00, '1,2,3,4,5'),
+(80, 'RX PARILLA COSTAL', 60.00, '1,2,3,4,5'),
+(81, 'RX PELVIS CENTRADA EN PUBIS', 60.00, '1,2,3,4,5'),
+(82, 'RX CADERA BILATERAL', 55.00, '1,2,3,4,5'),
+(83, 'RX CADERA UNILATERAL', 50.00, '1,2,3,4,5'),
+(84, 'RX CADERA PEDIATRICA VON ROSEN MCP', 65.00, '1,2,3,4,5'),
+(85, 'RX MEDICI?N DE M.I', 95.00, '1,2,3,4,5'),
+(86, 'RX MUSLO FEMUR C/U', 55.00, '1,2,3,4,5'),
+(87, 'RX RODILLA UNILATERAL', 50.00, '1,2,3,4,5'),
+(88, 'RX RODILLA BILATERAL (COMPARATIVA)', 65.00, '1,2,3,4,5'),
+(89, 'RX PIERNA (TIBIA/PERONE)', 50.00, '1,2,3,4,5'),
+(90, 'RX PIERNA (TIBIA/PERONE) (COMPARATIVA)', 70.00, '1,2,3,4,5'),
+(91, 'RX TOBILLO UNILATERAL', 48.00, '1,2,3,4,5'),
+(92, 'RX TOBILLO BILATERAL', 70.00, '1,2,3,4,5'),
+(93, 'RX PIE UNILATERAL', 45.00, '1,2,3,4,5'),
+(94, 'RX PIE BILATERAL (COMPARATIVO)', 65.00, '1,2,3,4,5'),
+(95, 'RX TALON CALCANEO', 45.00, '1,2,3,4,5'),
+(96, 'RX TALON CALCANEO BILATERAL', 55.00, '1,2,3,4,5'),
+(97, 'TEM DE CRANEO (TEM DE CABEZA)', 259.00, '1,2,3,4,5'),
+(98, 'TEM DE FOSA POSTERIOR', 320.00, '1,2,3,4,5'),
+(99, 'TEM DE MACIZO FACIAL', 320.00, '1,2,3,4,5'),
+(100, 'TEM DE ARTICULACION TEMPOROMANDIBULAR (TEM DE ATM)', 320.00, '1,2,3,4,5'),
+(101, 'TEM DE OIDO', 320.00, '1,2,3,4,5'),
+(102, 'TEM DE MASTOIDES', 320.00, '1,2,3,4,5'),
+(103, 'TEM DE ORBITAS', 320.00, '1,2,3,4,5'),
+(104, 'TEM DE SENOS PARANASALES (TEM DE SPN)', 320.00, '1,2,3,4,5'),
+(105, 'TEM DE SILLA TURCA/HIPOFISIS', 320.00, '1,2,3,4,5'),
+(106, 'AUDITIVO', 320.00, '1,2,3,4,5'),
+(107, 'TEM DE PIE', 320.00, '1,2,3,4,5'),
+(108, 'TEM DE AMBOS PIES (BILATERAL)', 540.00, '1,2,3,4,5'),
+(109, 'TEM DE TOBILLO', 320.00, '1,2,3,4,5'),
+(110, 'TEM DE AMBOS TOBILLOS (BILATERAL)', 540.00, '1,2,3,4,5'),
+(111, 'TEM DE PIERNA', 320.00, '1,2,3,4,5'),
+(112, 'TEM DE PIERNAS (BILATERAL)', 540.00, '1,2,3,4,5'),
+(113, 'TEM DE RODILLA', 320.00, '1,2,3,4,5'),
+(114, 'TEM DE AMBAS RODILLAS (BILATERAL)', 540.00, '1,2,3,4,5'),
+(115, 'TEM DE MUSLO (TEM DE FEMUR)', 320.00, '1,2,3,4,5'),
+(116, 'TEM DE AMBOS MUSLOS (TEM DE AMBOS FEMUR)', 540.00, '1,2,3,4,5'),
+(117, 'ANGIO TEM DE CAROTIDAS (ANGIO TEM CERVICAL)', 850.00, '1,2,3,4,5'),
+(118, 'ANGIO TEM DE CRANEO (ANGIO DE CEREBRO)', 850.00, '1,2,3,4,5'),
+(119, 'ANGIO TEM DE ARTERIAS PULMONARES (ANGIO TEP)', 850.00, '1,2,3,4,5'),
+(120, 'ANGIO TEM DE AORTA TORAXICA', 850.00, '1,2,3,4,5'),
+(121, 'ANGIO TEM DE AORTA ABDOMINAL E ILIACAS', 700.00, '1,2,3,5'),
+(122, 'ANGIO TEM DE MACIZO FACIAL', 850.00, '1,2,3,4,5'),
+(123, 'ANGIO TEM DE MIEMBROS SUPERIORES', 850.00, '1,2,3,4,5'),
+(124, 'HIDROTEM', 850.00, '1,2,3,4,5'),
+(125, 'ENTEROTEM', 850.00, '1,2,3,4,5'),
+(126, 'ESTUDIO POR CONTRASTE', 230.00, '1,2,3,4,5'),
+(127, 'SEDACI?N', 240.00, '1,2,3,4,5'),
+(128, 'TEM DE ABDOMEN SUPERIOR', 399.00, '1,2,3,4,5'),
+(129, 'TEM DE ABDOMEN INFERIOR', 399.00, '1,2,3,4,5'),
+(130, 'TEM DE ABDOMEN TOTAL', 560.00, '1,2,3,4,5'),
+(131, 'TEM DE ABDOMEN (TRIFASICO DE HIGADO - TRIFASICO DE PANCREAS) C/C', 810.00, '1,2,3,4,5'),
+(132, 'TEM UROTOMOGRAFIA (TEM DE RI?ONES)', 450.00, '1,2,3,4,5'),
+(133, 'TEM DE PELVIS', 399.00, '1,2,3,4,5'),
+(134, 'TEM DE CADERA UN SOLO LADO', 300.00, '1,2,3,4,5'),
+(135, 'TEM DE CADERAS BILATERAL', 500.00, '1,2,3,4,5'),
+(136, 'TEM DE ANTEBRAZO', 320.00, '1,2,3,4,5'),
+(137, 'TEM DE AMBOS ANTEBRAZOS (BILATERAL)', 540.00, '1,2,3,4,5'),
+(138, 'TEM DE HUMERO (TEM DE BRZO)', 320.00, '1,2,3,4,5'),
+(139, 'TEM DE AMBOS HUMEROS (BILATERAL - TEM DE AMBOS BRAZOS)', 540.00, '1,2,3,4,5'),
+(140, 'TEM DE MANO', 320.00, '1,2,3,4,5'),
+(141, 'TEM DE AMBAS MANOS (BILATERAL)', 540.00, '1,2,3,4,5'),
+(142, 'TEM DE CODO', 320.00, '1,2,3,4,5'),
+(143, 'TEM DE AMBOS CODOS (BILATERAL)', 540.00, '1,2,3,4,5'),
+(144, 'TEM DE CUELLO (TEM DE FARINGE - TEM DE LARINGE)', 320.00, '1,2,3,4,5'),
+(145, 'TEM DE HOMBRO', 320.00, '1,2,3,4,5'),
+(146, 'TEM DE AMBOS HOMBROS (BILATERAL)', 540.00, '1,2,3,4,5'),
+(147, 'TEM DE PULMONES (TEM DE TORAX EN ALTA RESOLUCION)', 279.00, '1,2,3,4,5'),
+(148, 'TEM DE PARRILLA COSTAL (TEM DE COSTILLAS)', 320.00, '1,2,3,4,5'),
+(149, 'TEM DE COLUMNA CERVICAL', 320.00, '1,2,3,4,5'),
+(150, 'TEM DE COLUMNA DORSAL', 320.00, '1,2,3,4,5'),
+(151, 'TEM DE COLUMNA LUMBAR', 320.00, '1,2,3,4,5'),
+(152, 'TEM DE COLUMNA LUMBO-SACRA', 320.00, '1,2,3,4,5'),
+(153, 'TEM DE COLUMNA SACROCOXIGEA (TEM DE SACRO-COXIS)', 320.00, '1,2,3,4,5'),
+(154, 'TEM DE SACROILIACAS', 320.00, '1,2,3,4,5'),
+(155, 'PANEL DE ALERGIA (36 Alergenos)', 200.00, '1,2,3,4,5'),
+(156, 'PERFIL ENA', 250.00, '1,2,3,4,5'),
+(157, 'PERFIL ANEMIA  (Hemog.\nCompleto,constantes corp., hierro\nserico)', 50.00, '1,2,3,4,5'),
+(158, 'PERFIL LIPIDICO', 40.00, '1,2,3,4,5'),
+(159, 'PERFIL HEPATICO', 50.00, '1,2,3,4,5'),
+(160, 'PERFIL DE COAGULACION (TP, TPTa,\nTT,FIBRINOGENO)', 100.00, '1,2,3,4,5'),
+(161, 'PERFIL HORMONAL FEMENINO I\n(FSH, LH,PROLACTINA,PROGESTERONA,ES TRADIOL)', 170.00, '1,2,3,4,5'),
+(162, 'PERFIL HORMONAL FEMENINO II\n(FSH, LH, ESTRADIOL)', 100.00, '1,2,3,4,5'),
+(163, 'PERFIL PRENATAL COMPLETO\n(glucosa,urea,creatinina,hiv,,hgma,gr upo,hepatitis B  HsAg, SIFILIS ELISA,\neco)', 120.00, '1,2,3,4,5'),
+(164, 'PERFIL RENAL (urea,creatiina,acido urico,proteinuria,depuracion creatinina,ECO)', 100.00, '1,2,3,4,5'),
+(165, 'PERFIL REUMATICO I ( PCR, FR, VSG,\nANA, ACIDO URICO)', 80.00, '1,2,3,4,5'),
+(166, 'PERFIL REUMATICO II (PCR, FR, VSG, ANA, CELULAS LE, ACIDO URICO)', 120.00, '1,2,3,4,5'),
+(167, 'PERFIL TIROIDEO I (T3, T4, TSH)', 80.00, '1,2,3,4,5'),
+(168, 'TORCH IGM (toxoplasma, rubeola, citomegalovirus,Herpes I, HerpesII)', 180.00, '1,2,3,4,5'),
+(169, 'TORCH IGG (toxoplasma, rubeola, citomegalovirus, Herpes I, HerpesII)', 180.00, '1,2,3,4,5'),
+(170, 'PERFIL PRE OPERATORIO ( HIV\nELISA, HEPATITIS B(HBSAG), CREATININA, UREA, GLUCOSA, GRUPO SANGUINEO Y RH, SIFILIS\nELISA, HEMOGRAMA C. ECO)', 150.00, '1,2,3,4,5'),
+(171, 'PERFIL DE DROGAS DE ABUSO\n(COCAINA, MARIHUANA,\nBENZODIAZEPINAS (ORINA))', 100.00, '1,2,3,4,5'),
+(172, 'PRUEBAS INTERLEUQUINA IL 6', 200.00, '1,2,3,4,5'),
+(173, 'PRUEBAS 17 - OH PROGESTERONA', 50.00, '1,2,3,4,5'),
+(174, 'PRUEBAS ACIDO FOLICO INTRAERITROCITARIO', 190.00, '1,2,3,4,5'),
+(175, 'PRUEBAS ACIDO FOLICO SERICO', 45.00, '1,2,3,4,5'),
+(176, 'PRUEBAS ACIDO LACTICO (LACTATO)', 50.00, '1,2,3,4,5'),
+(177, 'PRUEBAS ACIDO URICO', 12.00, '1,2,3,4,5'),
+(178, 'PRUEBAS ACIDO URICO EN ORINA 24hr', 12.00, '1,2,3,4,5'),
+(179, 'PRUEBAS ACIDO VALPROICO,DOSAJE', 140.00, '1,2,3,4,5'),
+(180, 'PRUEBAS ACIDOS BILIARES', 100.00, '1,2,3,4,5'),
+(181, 'PRUEBAS ACTH - ADRENOCORTICOTROPA', 70.00, '1,2,3,4,5'),
+(182, 'PRUEBAS AGLUTINACIONES  EN PLACA (TIFOIDEA,BUCELLAS)', 20.00, '1,2,3,4,5'),
+(183, 'PRUEBAS AGLUTINACIONES EN TUBO (TIFOIDEA,BUCELLAS)', 25.00, '1,2,3,4,5'),
+(184, 'PRUEBAS ALFAFETOPROTEINA (AFP)', 50.00, '1,2,3,4,5'),
+(185, 'PRUEBAS AMILASA', 15.00, '1,2,3,4,5'),
+(186, 'PRUEBAS AMILASA EN ORINA 24hr', 25.00, '1,2,3,4,5'),
+(187, 'PRUEBAS ANCA C (PR3)', 60.00, '1,2,3,4,5'),
+(188, 'PRUEBAS ANCA P (MPO)', 60.00, '1,2,3,4,5'),
+(189, 'PRUEBAS ANCA TOTAL', 60.00, '1,2,3,4,5'),
+(190, 'PRUEBAS ANDROSTENEDIONA', 60.00, '1,2,3,4,5'),
+(191, 'PRUEBAS ANTI ANTIGENO DE SUPERFICIE ( Anti HBs)', 30.00, '1,2,3,4,5'),
+(192, 'PRUEBAS ANTI ANTIGENO E, HEPATITIS B ( Anti\nHbe)', 60.00, '1,2,3,4,5'),
+(193, 'PRUEBAS ANTI BETA 2 GLICOPROTEINA IGG', 60.00, '1,2,3,4,5'),
+(194, 'PRUEBAS ANTI BETA 2 GLICOPROTEINA IGM', 60.00, '1,2,3,4,5'),
+(195, 'PRUEBAS ANTI CARDIOLIPINA IGG', 60.00, '1,2,3,4,5'),
+(196, 'PRUEBAS ANTI CARDIOLIPINA IGM', 60.00, '1,2,3,4,5'),
+(197, 'PRUEBAS ANTI CCP', 150.00, '1,2,3,4,5'),
+(198, 'PRUEBAS ANTI DNA NATIVO (DS)/ (SS) C/U', 100.00, '1,2,3,4,5'),
+(199, 'PRUEBAS ANTI FOSFOLIPIDOS I( ACL + AL) IGG', 120.00, '1,2,3,4,5'),
+(200, 'PRUEBAS ANTI FOSFOLIPIDOS I( ACL + AL) IGM', 120.00, '1,2,3,4,5'),
+(201, 'PRUEBAS ANTI FOSFOLIPIDOS PANEL COMPLETO (IGG)', 200.00, '1,2,3,4,5'),
+(202, 'PRUEBAS ANTI FOSFOLIPIDOS PANEL COMPLETO (IGM)', 200.00, '1,2,3,4,5'),
+(203, 'PRUEBAS ANTI MICROSOMALES', 50.00, '1,2,3,4,5'),
+(204, 'PRUEBAS ANTI MITOCONDRIALES (AMA)', 65.00, '1,2,3,4,5'),
+(205, 'PRUEBAS ANTI MUSCULO LISO (ASMA)', 65.00, '1,2,3,4,5'),
+(206, 'PRUEBAS ANTI NUCLEARES ( ANA METODO IFI )', 100.00, '1,2,3,4,5'),
+(207, 'PRUEBAS ANTI NUCLEARES ( ANA SCREEN)', 50.00, '1,2,3,4,5'),
+(208, 'PRUEBAS ANTI PEROXIDASA (TPO)', 50.00, '1,2,3,4,5'),
+(209, 'PRUEBAS ANTI SMITH (SM)', 50.00, '1,2,3,4,5'),
+(210, 'PRUEBAS ANTI SS-A (RO)', 60.00, '1,2,3,4,5'),
+(211, 'PRUEBAS ANTI SS-B (LA)', 60.00, '1,2,3,4,5'),
+(212, 'PRUEBAS ANTI TIROGLOBULINA (A-TG)', 50.00, '1,2,3,4,5'),
+(213, 'PRUEBAS ANTICOAGULANTE LUPICO', 55.00, '1,2,3,4,5'),
+(214, 'PRUEBAS ANTICORE IGG HEPATITIS B', 45.00, '1,2,3,4,5'),
+(215, 'PRUEBAS ANTICORE IGM HEPATITIS B', 45.00, '1,2,3,4,5'),
+(216, 'PRUEBAS ANTICORE TOTAL HEPATITIS B (HBc)', 40.00, '1,2,3,4,5'),
+(217, 'PRUEBAS ANTIESTREPTOLISINA \"O\" (ASO) CUANTI', 20.00, '1,2,3,4,5'),
+(218, 'PRUEBAS ANTIESTREPTOLISINA \"O\" (ASO) LATEX', 20.00, '1,2,3,4,5'),
+(219, 'PRUEBAS ANTIGENO CARCINOEMBRIONARIO (CEA)', 55.00, '1,2,3,4,5'),
+(220, 'PRUEBAS ANTIGENO DE SUPERFICIE (HBSAG) ELISA', 30.00, '1,2,3,4,5'),
+(221, 'PRUEBAS ANTIGENO DE SUPERFICIE (HBSAG) RAPIDA', 30.00, '1,2,3,4,5'),
+(222, 'PRUEBAS ANTIGENO E , HEPATITIS B (HBeAg)', 50.00, '1,2,3,4,5'),
+(223, 'PRUEBAS BAAF TIROIDEO', 150.00, '1,2,3,4,5'),
+(224, 'PRUEBAS BENZODIACEPINA', 40.00, '1,2,3,4,5'),
+(225, 'PRUEBAS BETA 2 MICROGLOBULINA', 50.00, '1,2,3,4,5'),
+(226, 'PRUEBAS BILLIRUBINA TOTAL Y FRACC.', 20.00, '1,2,3,4,5'),
+(227, 'PRUEBAS BIOPSIA GRANDE', 250.00, '1,2,3,4,5'),
+(228, 'PRUEBAS BIOPSIA MEDIANA', 150.00, '1,2,3,4,5'),
+(229, 'PRUEBAS BIOPSIA PUNCH (PIEL)', 100.00, '1,2,3,4,5'),
+(230, 'PRUEBAS BIOPSIAS PEQUE?AS (endoscopicas, cervix)', 100.00, '1,2,3,4,5'),
+(231, 'PRUEBAS BLOCK CELL', 120.00, '1,2,3,4,5'),
+(232, 'PRUEBAS Biopsia Residuo hospitalario              > 2 kg', 180.00, '1,2,3,4,5'),
+(233, 'PRUEBAS BRUCELLA IGM (ELISA)', 55.00, '1,2,3,4,5'),
+(234, 'PRUEBAS BRUCELLAS - 2 MERCAPTOETANOL', 55.00, '1,2,3,4,5'),
+(235, 'PRUEBAS BRUCELLAS - AC. BLOQUEADORES', 35.00, '1,2,3,4,5'),
+(236, 'PRUEBAS BRUCELLAS - EN PLACA', 15.00, '1,2,3,4,5'),
+(237, 'PRUEBAS BRUCELLAS - FENOMENO DE ZONA', 20.00, '1,2,3,4,5'),
+(238, 'PRUEBAS BRUCELLAS - ROSA DE BENGALA', 25.00, '1,2,3,4,5'),
+(239, 'PRUEBAS BUN (NITROGENO UREICO)', 15.00, '1,2,3,4,5'),
+(240, 'PRUEBAS Ca - 125 (ovarios)', 55.00, '1,2,3,4,5'),
+(241, 'PRUEBAS Ca - 15.3 (mama)', 55.00, '1,2,3,4,5'),
+(242, 'PRUEBAS Ca - 19.9 (colon,pancreas)', 55.00, '1,2,3,4,5'),
+(243, 'PRUEBAS Ca - 72.4 (estomago)', 55.00, '1,2,3,4,5'),
+(244, 'PRUEBAS CALCIO EN ORINA 24hr', 20.00, '1,2,3,4,5'),
+(245, 'PRUEBAS CALCIO IONICO', 20.00, '1,2,3,4,5'),
+(246, 'PRUEBAS CALCIO TOTAL', 20.00, '1,2,3,4,5'),
+(247, 'PRUEBAS CALCITONINA', 70.00, '1,2,3,4,5'),
+(248, 'PRUEBAS CARBAMAZEPINA', 100.00, '1,2,3,4,5'),
+(249, 'PRUEBAS CELULAS L.E', 25.00, '1,2,3,4,5'),
+(250, 'PRUEBAS CISTICERCOSIS - WESTERN BLOT', 300.00, '1,2,3,4,5'),
+(251, 'PRUEBAS CITOMEGALOVIRUS IGG', 55.00, '1,2,3,4,5'),
+(252, 'PRUEBAS CITOMEGALOVIRUS IGM', 55.00, '1,2,3,4,5'),
+(253, 'PRUEBAS CLAMYDIA IGG', 50.00, '1,2,3,4,5'),
+(254, 'PRUEBAS CLAMYDIA IGM', 50.00, '1,2,3,4,5'),
+(255, 'PRUEBAS CLORO (CL) (suero y orina)', 20.00, '1,2,3,4,5'),
+(256, 'PRUEBAS COBRE ORINA', 150.00, '1,2,3,4,5'),
+(257, 'PRUEBAS COBRE SANGRE', 150.00, '1,2,3,4,5'),
+(258, 'PRUEBAS COLESTEROL HDL', 12.00, '1,2,3,4,5'),
+(259, 'PRUEBAS COLESTEROL LDL', 12.00, '1,2,3,4,5'),
+(260, 'PRUEBAS COLESTEROL TOTAL', 12.00, '1,2,3,4,5'),
+(261, 'PRUEBAS COLESTEROL VLDL', 12.00, '1,2,3,4,5'),
+(262, 'PRUEBAS COLINESTERASA', 30.00, '1,2,3,4,5'),
+(263, 'PRUEBAS COLORACIOM GRAM', 20.00, '1,2,3,4,5'),
+(264, 'PRUEBAS COLORACION GIEMSA', 20.00, '1,2,3,4,5'),
+(265, 'PRUEBAS COLORACION KINYOUN (Coccidios)', 20.00, '1,2,3,4,5'),
+(266, 'PRUEBAS COLORACION TINTA CHINA', 20.00, '1,2,3,4,5'),
+(267, 'PRUEBAS COMPLEMENTO C3', 50.00, '1,2,3,4,5'),
+(268, 'PRUEBAS COMPLEMENTO C4', 50.00, '1,2,3,4,5'),
+(269, 'PRUEBAS CONSTANTES CORPUSCULARES', 10.00, '1,2,3,4,5'),
+(270, 'PRUEBAS COOMBS DIRECTO', 35.00, '1,2,3,4,5'),
+(271, 'PRUEBAS COOMBS INDIRECTO', 35.00, '1,2,3,4,5'),
+(272, 'PRUEBAS COPROCULTIVO', 40.00, '1,2,3,4,5'),
+(273, 'PRUEBAS COPROPARASITOLOGICO FUNCIONAL', 25.00, '1,2,3,4,5'),
+(274, 'PRUEBAS CORTISOL LIBRE', 45.00, '1,2,3,4,5'),
+(275, 'PRUEBAS CORTISOL TOTAL (am,pm) c/u', 45.00, '1,2,3,4,5'),
+(276, 'PRUEBAS CPK MB (Isoenzima MB)', 40.00, '1,2,3,4,5'),
+(277, 'PRUEBAS CPK TOTAL', 40.00, '1,2,3,4,5'),
+(278, 'PRUEBAS CREATININA', 12.00, '1,2,3,4,5'),
+(279, 'PRUEBAS CRIOAGLUTININAS', 30.00, '1,2,3,4,5'),
+(280, 'PRUEBAS CROMO ORINA', 150.00, '1,2,3,4,5'),
+(281, 'PRUEBAS CROMO SANGRE', 150.00, '1,2,3,4,5'),
+(282, 'PRUEBAS CUERPOS CETONICOS EN ORINA', 10.00, '1,2,3,4,5'),
+(283, 'PRUEBAS CULTIVO DE ESPUTO (Germenes\ncomunes)', 40.00, '1,2,3,4,5'),
+(284, 'PRUEBAS CULTIVO DE HONGOS', 40.00, '1,2,3,4,5'),
+(285, 'PRUEBAS CULTIVO DE LIQUIDOS\n(pleural,sinovial,lcr)', 40.00, '1,2,3,4,5'),
+(286, 'PRUEBAS CULTIVO DE SECRECIONES (varios) c/u', 35.00, '1,2,3,4,5'),
+(287, 'PRUEBAS CULTIVO DE SEMEN', 40.00, '1,2,3,4,5'),
+(288, 'PRUEBAS CYFRA 21.1', 50.00, '1,2,3,4,5'),
+(289, 'PRUEBAS DEPURACION DE CREATININA', 25.00, '1,2,3,4,5'),
+(290, 'PRUEBAS DESHIDROGENASA LACTICA (DHL)', 25.00, '1,2,3,4,5'),
+(291, 'PRUEBAS DHEA (deshidroepiandrosterona)', 40.00, '1,2,3,4,5'),
+(292, 'PRUEBAS DHEAS (deshidroepiandrosterona sulfato)', 40.00, '1,2,3,4,5'),
+(293, 'PRUEBAS DIGOXINA', 100.00, '1,2,3,4,5'),
+(294, 'PRUEBAS DIMERO D', 45.00, '1,2,3,4,5'),
+(295, 'PRUEBAS DIRECTO KOH (Hifas y levaduras)', 15.00, '1,2,3,4,5'),
+(296, 'PRUEBAS DIRECTO LESHMANIASIS', 25.00, '1,2,3,4,5'),
+(297, 'PRUEBAS DIFENIL HIDATOINA', 100.00, '1,2,3,4,5'),
+(298, 'PRUEBAS DOSAJE DE COCAINA', 25.00, '1,2,3,4,5'),
+(299, 'PRUEBAS DOSAJE DE MARIHUANA', 25.00, '1,2,3,4,5'),
+(300, 'PRUEBAS EBNA IGG (MONONUCLEOSIS)', 50.00, '1,2,3,4,5'),
+(301, 'PRUEBAS EBNA IGM (MONONUCLEOSIS)', 50.00, '1,2,3,4,5'),
+(302, 'PRUEBAS ELECTROLITOS (Na, K , Cl)', 45.00, '1,2,3,4,5'),
+(303, 'PRUEBAS ELECTROLITOS (Na, K , Cl) orina simp y 24h', 45.00, '1,2,3,4,5'),
+(304, 'PRUEBAS ELECTROLITOS EN ORINA (Na, K, Cl) 24\nhras', 45.00, '1,2,3,4,5'),
+(305, 'PRUEBAS ESPERMATOGRAMA', 55.00, '1,2,3,4,5'),
+(306, 'PRUEBAS ESTRADIOL LIBRE', 45.00, '1,2,3,4,5'),
+(307, 'PRUEBAS ESTRADIOL TOTAL', 45.00, '1,2,3,4,5'),
+(308, 'PRUEBAS ESTRIOL LIBRE', 45.00, '1,2,3,4,5'),
+(309, 'PRUEBAS ESTRIOL TOTAL', 45.00, '1,2,3,4,5'),
+(310, 'PRUEBAS ESTROGENO', 45.00, '1,2,3,4,5'),
+(311, 'PRUEBAS ESTUDIO\nLCR(citologico,glucosa,proteinas,dhl, ADA)', 90.00, '1,2,3,4,5'),
+(312, 'PRUEBAS ESTUDIO LIQUIDO\nPLEURAL(citologico,glucosa,proteinas,d hl, ADA)', 90.00, '1,2,3,4,5'),
+(313, 'PRUEBAS ESTUDIO LIQUIDO\nSINOVIAL(citologico,glucosa,proteinas,d hl,FR,?cido ?rico)', 90.00, '1,2,3,4,5'),
+(314, 'PRUEBAS EXAMEN COMPLETO DE ORINA', 10.00, '1,2,3,4,5'),
+(315, 'PRUEBAS FACTOR REUMATOIDE (LATEX)', 15.00, '1,2,3,4,5'),
+(316, 'PRUEBAS FACTOR REUMATOIDE CUANTITATIVO (ITB)', 20.00, '1,2,3,4,5'),
+(317, 'PRUEBAS FENITOINA, DOSAJE', 100.00, '1,2,3,4,5'),
+(318, 'PRUEBAS FERRITINA', 35.00, '1,2,3,4,5'),
+(319, 'PRUEBAS FIBRINOGENO', 30.00, '1,2,3,4,5'),
+(320, 'PRUEBAS FOSFATASA ACIDA PROSTATICA', 30.00, '1,2,3,4,5'),
+(321, 'PRUEBAS FOSFATASA ACIDA TOTAL', 30.00, '1,2,3,4,5'),
+(322, 'PRUEBAS FOSFATASA ALCALINA', 15.00, '1,2,3,4,5'),
+(323, 'PRUEBAS FOSFORO', 25.00, '1,2,3,4,5'),
+(324, 'PRUEBAS FOSFORO EN ORINA 24hr', 25.00, '1,2,3,4,5'),
+(325, 'PRUEBAS FSH - HORMONA FOLICULO ESTIMULANTE', 45.00, '1,2,3,4,5'),
+(326, 'PRUEBAS FTA ABSORVIDO (IFI)', 50.00, '1,2,3,4,5'),
+(327, 'PRUEBAS GAMMAGLUTAMIL TRANSPEP. (GGT)', 25.00, '1,2,3,4,5'),
+(328, 'PRUEBAS GLUCOSA BASAL', 12.00, '1,2,3,4,5'),
+(329, 'PRUEBAS GLUCOSA POST PRANDIAL', 12.00, '1,2,3,4,5'),
+(330, 'PRUEBAS GOTA GRUESA', 15.00, '1,2,3,4,5'),
+(331, 'PRUEBAS GRUPO SANGUINEO', 10.00, '1,2,3,4,5'),
+(332, 'PRUEBAS HAPTOGLOBINA', 100.00, '1,2,3,4,5'),
+(333, 'PRUEBAS HCG SUB UNIDAD BETA CUALITATIVO', 20.00, '1,2,3,4,5'),
+(334, 'PRUEBAS HCG SUB UNIDAD BETA CUANTITATIVO(CLIA)', 50.00, '1,2,3,4,5'),
+(335, 'PRUEBAS HECES SERIADO X 3', 20.00, '1,2,3,4,5'),
+(336, 'PRUEBAS HECES SIMPLE X 1', 10.00, '1,2,3,4,5'),
+(337, 'PRUEBAS HELICOBACTER PYLORI IGA', 35.00, '1,2,3,4,5'),
+(338, 'PRUEBAS HELICOBACTER PYLORI IGG', 35.00, '1,2,3,4,5'),
+(339, 'PRUEBAS HELICOBACTER PYLORI IGM', 35.00, '1,2,3,4,5'),
+(340, 'PRUEBAS HEMOCULTIVO C/medio BIF', 90.00, '1,2,3,4,5'),
+(341, 'PRUEBAS HEMOGLOBINA GLICOSILADA (HbA1C)', 40.00, '1,2,3,4,5'),
+(342, 'PRUEBAS HEMOGLOBINA Y HEMATOCRITO', 10.00, '1,2,3,4,5'),
+(343, 'PRUEBAS HEMOGRAMA AUTOMATIZADO', 15.00, '1,2,3,4,5'),
+(344, 'PRUEBAS HEPATITIS A IGG', 40.00, '1,2,3,4,5'),
+(345, 'PRUEBAS HEPATITIS A IGM', 40.00, '1,2,3,4,5'),
+(346, 'PRUEBAS HEPATITIS A TOTAL', 40.00, '1,2,3,4,5'),
+(347, 'PRUEBAS HEPATITIS C - ELISA (ANTI HCV)', 40.00, '1,2,3,4,5'),
+(348, 'PRUEBAS HERPES I IGG', 40.00, '1,2,3,4,5'),
+(349, 'PRUEBAS HERPES I IGM', 40.00, '1,2,3,4,5'),
+(350, 'PRUEBAS HERPES II IGG', 40.00, '1,2,3,4,5'),
+(351, 'PRUEBAS HERPES II IGM', 40.00, '1,2,3,4,5'),
+(352, 'PRUEBAS HIDATIDOSIS - ELISA', 40.00, '1,2,3,4,5'),
+(353, 'PRUEBAS HIDATIDOSIS - WESTERN BLOT', 220.00, '1,2,3,4,5'),
+(354, 'PRUEBAS HIERRO SERICO', 25.00, '1,2,3,4,5'),
+(355, 'PRUEBAS HIV - ELISA (4ta Generacion)', 30.00, '1,2,3,4,5'),
+(356, 'PRUEBAS HIV 1 - WESTERN BLOT                         ( CONFIRMATORIA)', 250.00, '1,2,3,4,5'),
+(357, 'PRUEBAS HORMONA ANTIMULLERIANA', 200.00, '1,2,3,4,5'),
+(358, 'PRUEBAS HORMONA DEL CRECIMIENTO (HGH)', 45.00, '1,2,3,4,5'),
+(359, 'PRUEBAS HTLV / 1-2', 45.00, '1,2,3,4,5'),
+(360, 'PRUEBAS HTLV / 1-2 -  WESTERN BLOT', 400.00, '1,2,3,4,5'),
+(361, 'PRUEBAS IGF-1 (FACTOR INSULINICO CRECIMIENTO)', 80.00, '1,2,3,4,5'),
+(362, 'PRUEBAS INMUNOGLOBULINA A', 40.00, '1,2,3,4,5'),
+(363, 'PRUEBAS INMUNOGLOBULINA E', 45.00, '1,2,3,4,5'),
+(364, 'PRUEBAS INMUNOGLOBULINA G', 40.00, '1,2,3,4,5'),
+(365, 'PRUEBAS INMUNOGLOBULINA M', 40.00, '1,2,3,4,5'),
+(366, 'PRUEBAS INSULINA BASAL', 45.00, '1,2,3,4,5'),
+(367, 'PRUEBAS INSULINA POST PRANDIAL', 45.00, '1,2,3,4,5'),
+(368, 'PRUEBAS INSULINA TOLERANCIA (4 DOSAJES)', 150.00, '1,2,3,4,5'),
+(369, 'PRUEBAS LAMINA PERIFERICA', 20.00, '1,2,3,4,5'),
+(370, 'PRUEBAS LH - HORMONA LUTEINIZANTE', 35.00, '1,2,3,4,5'),
+(371, 'PRUEBAS LIPASA', 25.00, '1,2,3,4,5'),
+(372, 'PRUEBAS LIPIDOS TOTALES', 15.00, '1,2,3,4,5'),
+(373, 'PRUEBAS LITIO', 100.00, '1,2,3,4,5'),
+(374, 'PRUEBAS MAGNESIO', 20.00, '1,2,3,4,5'),
+(375, 'PRUEBAS MERCURIO ORINA', 150.00, '1,2,3,4,5'),
+(376, 'PRUEBAS METODO DE CONCENTRACION PARASITOS', 15.00, '1,2,3,4,5'),
+(377, 'PRUEBAS MICROALBUMINURIA ORINA 24H', 35.00, '1,2,3,4,5'),
+(378, 'PRUEBAS MICROALBUMINURIA ORINA SIMPLE', 35.00, '1,2,3,4,5'),
+(379, 'PRUEBAS MIOGLOBINA', 40.00, '1,2,3,4,5'),
+(380, 'PRUEBAS NTX TELLOPEPTIDO ORINA SIMPLE', 180.00, '1,2,3,4,5'),
+(381, 'PRUEBAS PAPANICOLAOU - CERVICO VAGINAL', 15.00, '1,2,3,4,5'),
+(382, 'PRUEBAS PAPANICOLAOU - liquidos (pleural,ascitico)', 25.00, '1,2,3,4,5'),
+(383, 'PRUEBAS PARATOHORMONA (PTH -M)', 55.00, '1,2,3,4,5'),
+(384, 'PRUEBAS PARATOHORMONA INTACTA (PTH-I)', 55.00, '1,2,3,4,5'),
+(385, 'PRUEBAS PLOMO ORINA', 150.00, '1,2,3,4,5'),
+(386, 'PRUEBAS PLOMO SANGRE', 150.00, '1,2,3,4,5'),
+(387, 'PRUEBAS POTASIO (K)', 15.00, '1,2,3,4,5'),
+(388, 'PRUEBAS PRO BNP (INSUFICIENCIA CARDIACA)', 220.00, '1,2,3,4,5'),
+(389, 'PRUEBAS PROCALCITONINA (SEPSIS)', 220.00, '1,2,3,4,5'),
+(390, 'PRUEBAS PROGESTERONA', 35.00, '1,2,3,4,5'),
+(391, 'PRUEBAS PROLACTINA', 35.00, '1,2,3,4,5'),
+(392, 'PRUEBAS PROLACTINA POOL 1 DOSAJE', 35.00, '1,2,3,4,5'),
+(393, 'PRUEBAS PROLACTINA POOL 3 DOSAJES', 100.00, '1,2,3,4,5'),
+(394, 'PRUEBAS PROTEINA C REACTIVA (LATEX)', 15.00, '1,2,3,4,5'),
+(395, 'PRUEBAS PROTEINA C REACTIVA CUANTITATIVO (ITB)', 20.00, '1,2,3,4,5'),
+(396, 'PRUEBAS PROTEINAS TOOTAL Y FRACC.', 12.00, '1,2,3,4,5'),
+(397, 'PRUEBAS PROTEINOGRAMA ELECTROFORETICO', 100.00, '1,2,3,4,5'),
+(398, 'PRUEBAS PROTEINURIA 24hr', 20.00, '1,2,3,4,5'),
+(399, 'PRUEBAS PSA INDICE', 50.00, '1,2,3,4,5'),
+(400, 'PRUEBAS PSA LIBRE', 35.00, '1,2,3,4,5'),
+(401, 'PRUEBAS PSA TOTAL', 30.00, '1,2,3,4,5'),
+(402, 'PRUEBAS RETICULOCITOS', 20.00, '1,2,3,4,5'),
+(403, 'PRUEBAS ROTAVIRUS EN HECES', 25.00, '1,2,3,4,5'),
+(404, 'PRUEBAS RPR CUALITATIVO', 15.00, '1,2,3,4,5'),
+(405, 'PRUEBAS RPR CUANTITATIVO', 20.00, '1,2,3,4,5'),
+(406, 'PRUEBAS RUBEOLA IGG', 45.00, '1,2,3,4,5'),
+(407, 'PRUEBAS RUBEOLA IGM', 45.00, '1,2,3,4,5'),
+(408, 'PRUEBAS RX INFLAMATORIA  EN HECES', 10.00, '1,2,3,4,5'),
+(409, 'PRUEBAS SATURACION DE TRANSFERRINA', 40.00, '1,2,3,4,5'),
+(410, 'PRUEBAS SET DE BRUCELAS', 120.00, '1,2,3,4,5'),
+(411, 'PRUEBAS PAUL BUNNEL', 50.00, '1,2,3,4,5'),
+(412, 'PRUEBAS SODIO', 15.00, '1,2,3,4,5'),
+(413, 'PRUEBAS T3 (TRYODOTIRONINA)', 30.00, '1,2,3,4,5'),
+(414, 'PRUEBAS T3 LIBRE', 30.00, '1,2,3,4,5'),
+(415, 'PRUEBAS T4 (TIROXINA)', 30.00, '1,2,3,4,5'),
+(416, 'PRUEBAS T4 LIBRE', 30.00, '1,2,3,4,5'),
+(417, 'PRUEBAS TEST DE ADA', 50.00, '1,2,3,4,5'),
+(418, 'PRUEBAS TEST DE GRAHAM', 10.00, '1,2,3,4,5'),
+(419, 'PRUEBAS TESTOSTERONA TOTAL', 40.00, '1,2,3,4,5'),
+(420, 'PRUEBAS TESTTOSTERONA LIBRE', 40.00, '1,2,3,4,5'),
+(421, 'PRUEBAS THEVENON EN HECES', 15.00, '1,2,3,4,5'),
+(422, 'PRUEBAS TIEMPO DE PROTROMBINA, INR (TP)', 20.00, '1,2,3,4,5'),
+(423, 'PRUEBAS TIEMPO DE TROMBINA (TT)', 20.00, '1,2,3,4,5'),
+(424, 'PRUEBAS TIEMPO DE TROMBOPLASTINA (TPTa)', 20.00, '1,2,3,4,5'),
+(425, 'PRUEBAS TIROGLOBULINA', 50.00, '1,2,3,4,5'),
+(426, 'PRUEBAS TOLERANCIA A LA GLUCOSA (4 Pbas)', 40.00, '1,2,3,4,5'),
+(427, 'PRUEBAS TOXOPLASMA GONDII IGG', 40.00, '1,2,3,4,5'),
+(428, 'PRUEBAS TOXOPLASMA GONDII IGM', 40.00, '1,2,3,4,5'),
+(429, 'PRUEBAS TRANSAMINASA OXALACETICO (TGO)', 12.00, '1,2,3,4,5'),
+(430, 'PRUEBAS TRANSAMINASA PIRUVICA (TGP)', 12.00, '1,2,3,4,5'),
+(431, 'PRUEBAS TRANSFERRINA', 40.00, '1,2,3,4,5'),
+(432, 'PRUEBAS TRIGLICERIDOS', 12.00, '1,2,3,4,5'),
+(433, 'PRUEBAS TROPONINA I ,CUANTITATIVO', 50.00, '1,2,3,4,5'),
+(434, 'PRUEBAS TROPONINA T, CUANTITATIVA', 50.00, '1,2,3,4,5'),
+(435, 'PRUEBAS TSH (HORMONA TIROTROPINA)', 30.00, '1,2,3,4,5'),
+(436, 'PRUEBAS TSH ULTRASENSILE', 30.00, '1,2,3,4,5'),
+(437, 'PRUEBAS UREA', 12.00, '1,2,3,4,5'),
+(438, 'PRUEBAS UROCULTIVO', 30.00, '1,2,3,4,5'),
+(439, 'PRUEBAS UROCULTIVO + ECO', 35.00, '1,2,3,4,5'),
+(440, 'PRUEBAS VARIANTE Du', 25.00, '1,2,3,4,5'),
+(441, 'PRUEBAS VCA IGG (MONONUCLEOSIS)', 50.00, '1,2,3,4,5'),
+(442, 'PRUEBAS VCA IGM (MONONUCLEOSIS)', 50.00, '1,2,3,4,5'),
+(443, 'PRUEBAS VDRL CUALITATIVO', 15.00, '1,2,3,4,5'),
+(444, 'PRUEBAS VDRL CUANTITATIVO', 20.00, '1,2,3,4,5'),
+(445, 'PRUEBAS VELOCIDAD DE SEDIMENTACION (VSG)', 10.00, '1,2,3,4,5'),
+(446, 'PRUEBAS VITAMINA B12', 45.00, '1,2,3,4,5'),
+(447, 'PRUEBAS VITAMINA D TOTAL', 100.00, '1,2,3,4,5'),
+(448, 'PRUEBAS VITAMINA D2 ( ergocalciferol -25 Hidroxi)', 100.00, '1,2,3,4,5'),
+(449, 'PRUEBAS VITAMINA D3 ( colecalciferol -1,25 Hidroxi)', 100.00, '1,2,3,4,5'),
+(450, 'PRUEBAS WALLER ROSSE', 30.00, '1,2,3,4,5'),
+(451, 'CONSULTA CARDIOLOGIA', 50.00, '1,2,3,4,5');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_doc`
+--
+
+CREATE TABLE `tipo_doc` (
+  `id` int(10) NOT NULL,
+  `nombre` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_doc`
+--
+
+INSERT INTO `tipo_doc` (`id`, `nombre`) VALUES
+(1, 'DNI'),
+(2, 'Carnet de Extranjería');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_persona`
+--
+
+CREATE TABLE `tipo_persona` (
+  `id` int(10) NOT NULL,
+  `nombre` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_persona`
+--
+
+INSERT INTO `tipo_persona` (`id`, `nombre`) VALUES
+(1, 'doctor'),
+(2, 'paciente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tratamiento`
+--
+
+CREATE TABLE `tratamiento` (
+  `id` int(10) NOT NULL,
+  `id_historia` int(10) NOT NULL,
+  `fecha` date NOT NULL,
+  `tratamiento` varchar(750) NOT NULL,
+  `cd` int(10) NOT NULL,
+  `prox_cita` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `egreso`
+--
+ALTER TABLE `egreso`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `exploracion_fisica`
+--
+ALTER TABLE `exploracion_fisica`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `historia`
+--
+ALTER TABLE `historia`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `lista`
+--
+ALTER TABLE `lista`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `logueo`
+--
+ALTER TABLE `logueo`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `lote`
+--
+ALTER TABLE `lote`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `pago`
+--
+ALTER TABLE `pago`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `persona`
+--
+ALTER TABLE `persona`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `producto`
+--
+ALTER TABLE `producto`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `tipo_doc`
+--
+ALTER TABLE `tipo_doc`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `tipo_persona`
+--
+ALTER TABLE `tipo_persona`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `tratamiento`
+--
+ALTER TABLE `tratamiento`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `egreso`
+--
+ALTER TABLE `egreso`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `exploracion_fisica`
+--
+ALTER TABLE `exploracion_fisica`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `historia`
+--
+ALTER TABLE `historia`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `lista`
+--
+ALTER TABLE `lista`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `logueo`
+--
+ALTER TABLE `logueo`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `lote`
+--
+ALTER TABLE `lote`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `pago`
+--
+ALTER TABLE `pago`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `persona`
+--
+ALTER TABLE `persona`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT de la tabla `producto`
+--
+ALTER TABLE `producto`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=455;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_doc`
+--
+ALTER TABLE `tipo_doc`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_persona`
+--
+ALTER TABLE `tipo_persona`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `tratamiento`
+--
+ALTER TABLE `tratamiento`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

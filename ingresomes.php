@@ -66,12 +66,12 @@ $html = '<!DOCTYPE html>
     <br><br>
       <table id="myTable">
         <tr class="header">
-          <th style="width:10%;">Mes</th>
-          <th style="width:10%;">Año</th>
+          <th style="width:15%;">Mes</th>
+          <th style="width:15%;">Año</th>
           <th style="width:20%;">Efectivo</th>
           <th style="width:20%;">Tarjeta</th>
-          <th style="width:20%;">Egreso</th>
-          <th style="width:20%;">Total</th>
+          <th style="width:15%;">Egreso</th>
+          <th style="width:15%;">Total</th>
         </tr>';
 
 $resultadoPago = $conexion->query("select monthname(pago.fecha) as mes, year(pago.fecha) as ano, sum(pago.efectivo) as efectivo, sum(pago.tarjeta) as tarjeta from pago GROUP by mes, ano order by ano desc, mes desc");
@@ -96,7 +96,10 @@ $html .= '</table>
   </body>
 </html>';
 
-$mpdf = new \Mpdf\Mpdf();
+$mpdf = new \Mpdf\Mpdf([
+    'mode' => 'utf-8',
+    'format' => [80, 258],
+]);
 $mpdf->WriteHTML($html);
 $mpdf->Output();
 

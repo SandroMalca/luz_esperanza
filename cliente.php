@@ -92,28 +92,35 @@ $resultado = $conexion->query("SELECT
 									Sexo: <?php echo $mostrar['sexo'] ?> <br>
 								</span>
 								<span style="margin-left: 40px;">
-									PAD: <?php echo $mostrar['pad'] ?> mmHg<br>
-									PAS: <?php echo $mostrar['pas'] ?> mmHg<br>
-									SpO2: <?php echo $mostrar['spo2'] ?> %<br>
-									FC: <?php echo $mostrar['fc'] ?> lpm<br>
-									Temperatura: <?php echo $mostrar['temp'] ?> °C<br>
-									Peso: <?php echo $mostrar['peso'] ?> kg<br>
-									Talla: <?php echo $mostrar['talla'] ?> cm<br>
+									PAD: <?php echo ($mostrar['pad'] == 0) ? '0' : $mostrar['pad']; ?> mmHg<br>
+									PAS: <?php echo ($mostrar['pas'] == 0) ? '0' : $mostrar['pas']; ?> mmHg<br>
+									SpO2: <?php echo ($mostrar['spo2'] == 0) ? '0' : $mostrar['spo2']; ?> %<br>
+									FC: <?php echo ($mostrar['fc'] == 0) ? '0' : $mostrar['fc']; ?> lpm<br>
+									Temperatura: <?php echo ($mostrar['temp'] == 0) ? '0' : $mostrar['temp']; ?> °C<br>
+									Peso: <?php echo ($mostrar['peso'] == 0) ? '0' : $mostrar['peso']; ?> kg<br>
+									Talla: <?php echo ($mostrar['talla'] == 0) ? '0' : $mostrar['talla']; ?> cm<br>
 								</span>
 							</span>
 						</td>
 						<td>
 							<?php if ($varsesion != 'Admin') { ?>
-								<button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar"
+								<button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" 
 									data-id="<?php echo $mostrar['id'] ?>"
 									data-nombre="<?php echo $mostrar['nombre'] ?>"
 									data-ape1="<?php echo $mostrar['ape1'] ?>"
 									data-ape2="<?php echo $mostrar['ape2'] ?>"
 									data-nrodoc="<?php echo $mostrar['nrodoc'] ?>"
-									data-tipodoc="<?php echo $mostrar['tipodoc'] ?>"
+									data-id_tipodoc="<?php echo $mostrar['id_tipodoc'] ?>"
 									data-fec_nac="<?php echo $mostrar['fec_nac'] ?>"
+									data-sexo="<?php echo $mostrar['sexo'] ?>"
 									data-estado_civil="<?php echo $mostrar['estado_civil'] ?>"
-									data-sexo="<?php echo $mostrar['sexo'] ?>">
+									data-pad="<?php echo $mostrar['pad'] ?>"
+									data-pas="<?php echo $mostrar['pas'] ?>"
+									data-spo2="<?php echo $mostrar['spo2'] ?>"
+									data-fc="<?php echo $mostrar['fc'] ?>"
+									data-temp="<?php echo $mostrar['temp'] ?>"
+									data-peso="<?php echo $mostrar['peso'] ?>"
+									data-talla="<?php echo $mostrar['talla'] ?>">
 									<i class="fa fa-pencil" aria-hidden="true"></i>
 								</button>
 							<?php } ?>
@@ -216,37 +223,37 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="pad">Presión Arterial Diastólica (PAD)</label>
-							<input type="number" step=".01" id="pad" name="pad" min="40" max="120" class="form-control" placeholder="Ingrese la presión arterial">
+							<input type="number" step=".01" id="pad" name="pad" max="200" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
 							<label for="pas">Presión Arterial Sistólica (PAS)</label>
-							<input type="number" step=".01" id="pas" name="pas" min="70" max="200" class="form-control" placeholder="Ingrese la presión arterial">
+							<input type="number" step=".01" id="pas" name="pas" max="200" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
 							<label for="spo2">Saturación de Oxígeno (SpO2)</label>
-							<input type="number" step=".01" id="spo2" name="spo2" min="70" max="100" class="form-control" placeholder="Ingrese la saturación de oxígeno">
+							<input type="number" step=".01" id="spo2" name="spo2" max="100" class="form-control" placeholder="Ingrese la saturación de oxígeno">
 						</div>
 						<br>
 						<div>
 							<label for="fc">Frecuencia Cardíaca (FC)</label>
-							<input type="number" step=".01" id="fc" name="fc" min="30" max="200" class="form-control" placeholder="Ingrese la frecuencia cardíaca">
+							<input type="number" step=".01" id="fc" name="fc" max="200" class="form-control" placeholder="Ingrese la frecuencia cardíaca">
 						</div>
 						<br>
 						<div>
 							<label for="temp">Temperatura</label>
-							<input type="number" step=".01" id="temp" name="temp" min="35.0" max="43.0" class="form-control" placeholder="Ingrese la temperatura">
+							<input type="number" step=".01" id="temp" name="temp" max="100.0" class="form-control" placeholder="Ingrese la temperatura">
 						</div>
 						<br>
 						<div>
 							<label for="peso">Peso (kg)</label>
-							<input type="number" step=".01" id="peso" name="peso" min="30.0" max="300.0" class="form-control" placeholder="Ingrese el peso">
+							<input type="number" step=".01" id="peso" name="peso" max="300.0" class="form-control" placeholder="Ingrese el peso">
 						</div>
 						<br>
 						<div>
 							<label for="talla">Talla (cm)</label>
-							<input type="number" step=".01" id="talla" name="talla" min="50" max="250" class="form-control" placeholder="Ingrese la talla">
+							<input type="number" step=".01" id="talla" name="talla" max="250" class="form-control" placeholder="Ingrese la talla">
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -288,17 +295,10 @@ $resultado = $conexion->query("SELECT
 						</div>
 						<br>
 						<div>
-							<label for="id_tipodocEdit">Tipo Documento</label>
-							<select name="id_tipodoc" id="id_tipodocEdit" class="form-control" onchange="actualizarValidacionDocumento(this, 'nrodocEdit')">
-								<?php
-								$resultado = $conexion->query("SELECT * FROM tipo_doc");
-								while ($f = mysqli_fetch_array($resultado)) {
-									$selected = ($f['id'] == 1) ? 'selected' : ''; 
-								?>
-									<option value="<?php echo $f['id'] ?>" <?php echo $selected ?>>
-										<?php echo $f['nombre'] ?>
-									</option>
-								<?php } ?>
+							<label for="id_tipodocEdit">Tipo de Documento <span style="color: red">*</span></label>
+							<select name="id_tipodoc" id="id_tipodocEdit" class="form-control" required onchange="actualizarValidacionDocumento(this, 'nrodocEdit')">
+								<option value="1" selected>DNI</option>
+								<option value="2">Carnet de Extranjería</option>
 							</select>
 						</div>
 						<br>
@@ -335,7 +335,7 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="padEdit">Presión Arterial Diastólica (PAD)</label>
-							<input type="number" step=".01" id="padEdit" name="pad" max="120" class="form-control" placeholder="Ingrese la presión arterial">
+							<input type="number" step=".01" id="padEdit" name="pad" max="200" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
@@ -355,7 +355,7 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="tempEdit">Temperatura</label>
-							<input type="number" step=".01" id="tempEdit" name="temp" max="43.0" class="form-control" placeholder="Ingrese la temperatura" empty>
+							<input type="number" step=".01" id="tempEdit" name="temp" max="100.0" class="form-control" placeholder="Ingrese la temperatura" empty>
 						</div>
 						<br>
 						<div>
@@ -418,15 +418,12 @@ $resultado = $conexion->query("SELECT
 		}
 
 		$(document).ready(function() {
-			// Variables para controlar la actualización automática
-			let actualizacionAutomatica = true;
 			let ultimaActualizacion = new Date().getTime();
-			let actualizacionPendiente = false;
-			
+			let ultimosClientes = [];
+
 			// Manejar el envío del formulario de ingreso
 			$("#formIngresar").on('submit', function(e) {
 				e.preventDefault();
-				actualizacionAutomatica = false; // Desactivar actualización automática temporalmente
 				
 				$.ajax({
 					url: 'php/ingresarcliente.php',
@@ -437,12 +434,7 @@ $resultado = $conexion->query("SELECT
 					if (response.success) {
 						$('#exampleModal').modal('hide');
 						$("#formIngresar")[0].reset();
-						actualizacionPendiente = true;
-						actualizarTablaClientes(true); // Forzar actualización inmediata
-						setTimeout(function() {
-							actualizacionAutomatica = true;
-							actualizacionPendiente = false;
-						}, 5000);
+						actualizarTablaClientes(); // Actualizar inmediatamente después de insertar
 					} else {
 						alert('Error al ingresar el cliente: ' + response.message);
 					}
@@ -452,21 +444,48 @@ $resultado = $conexion->query("SELECT
 				});
 			});
 
-			// Función para actualizar la tabla de clientes
-			function actualizarTablaClientes(forzar = false) {
-				if (!actualizacionAutomatica && !forzar) return; // No actualizar si está desactivado
-				if (actualizacionPendiente && !forzar) return; // No actualizar si hay una actualización pendiente
+			// Manejar el envío del formulario de edición
+			$("#formEditar").on('submit', function(e) {
+				e.preventDefault();
 				
+				$.ajax({
+					url: 'php/editarcliente.php',
+					method: 'POST',
+					data: $(this).serialize(),
+					dataType: 'json'
+				}).done(function(response) {
+					if (response.success) {
+						$('#modalEditar').modal('hide');
+						actualizarTablaClientes(true); // Forzar actualización después de editar
+					} else {
+						alert('Error al actualizar el cliente: ' + response.message);
+					}
+				}).fail(function(xhr) {
+					console.error('Error:', xhr.responseText);
+					alert('Error al procesar la solicitud. Por favor, inténtelo de nuevo.');
+				});
+			});
+
+			// Función para actualizar la tabla de clientes
+			function actualizarTablaClientes(forzarActualizacion = false) {
 				const ahora = new Date().getTime();
-				if (!forzar && ahora - ultimaActualizacion < 4000) return; // Evitar actualizaciones muy frecuentes
+				if (!forzarActualizacion && ahora - ultimaActualizacion < 1000) return; // Evitar actualizaciones muy frecuentes
 				
 				ultimaActualizacion = ahora;
 				
 				$.ajax({
 					url: 'php/obtener_clientes.php',
 					method: 'GET',
-					dataType: 'json'
+					dataType: 'json',
+					cache: false // Evitar caché
 				}).done(function(response) {
+					// Si se fuerza la actualización, no verificar si los datos son idénticos
+					if (!forzarActualizacion && JSON.stringify(response) === JSON.stringify(ultimosClientes)) {
+						return; // No actualizar si los datos son idénticos
+					}
+					
+					ultimosClientes = response; // Guardar los nuevos datos
+					
 					var tablaHTML = `
 						<tr class="header">
 							<th style="width:60%;">Datos del Paciente</th>
@@ -478,15 +497,15 @@ $resultado = $conexion->query("SELECT
 						tablaHTML += `
 							<tr>
 								<td>
-									<span id="nombre">${cliente.ape1} ${cliente.ape2}, ${cliente.nombre}</span><br>
-									<span id="datos" style="display: flex; ">
+									<span id="nombre">${cliente.ape1} ${cliente.ape2 || ''}, ${cliente.nombre}</span><br>
+									<span id="datos" style="display: flex;">
 										<span>
 											Tipo Documento: ${cliente.tipodoc}<br>
-											Nro. Doc: ${cliente.nrodoc}<br>
+											Nro. Doc: ${cliente.nrodoc || ''}<br>
 											Fec. Nac: ${(cliente.fec_nac && cliente.fec_nac != '0000-00-00') ? formatDate(cliente.fec_nac) : ''} 
 											${(cliente.edad && cliente.edad > 0) ? '(Edad: ' + cliente.edad + ' años)' : ''}<br>
-											Estado Civil: ${cliente.estado_civil}<br>
-											Sexo: ${cliente.sexo}<br>
+											Estado Civil: ${cliente.estado_civil || ''}<br>
+											Sexo: ${cliente.sexo || ''}<br>
 										</span>
 										<span style="margin-left: 40px;">
 											PAD: ${cliente.pad || '0'} mmHg<br>
@@ -500,24 +519,24 @@ $resultado = $conexion->query("SELECT
 									</span>
 								</td>
 								<td>
-								<?php if ($varsesion != 'Admin') { ?>
+									<?php if ($varsesion != 'Admin') { ?>
 									<button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" 
 										data-id="${cliente.id}" 
 										data-nombre="${cliente.nombre}" 
 										data-ape1="${cliente.ape1}" 
-										data-ape2="${cliente.ape2}" 
-										data-nrodoc="${cliente.nrodoc}" 
+										data-ape2="${cliente.ape2 || ''}" 
+										data-nrodoc="${cliente.nrodoc || ''}" 
 										data-id_tipodoc="${cliente.id_tipodoc}" 
-										data-fecnac="${cliente.fec_nac}"
-										data-sexo="${cliente.sexo}"
-										data-estado_civil="${cliente.estado_civil}"
-										data-pad="${cliente.pad}"
-										data-pas="${cliente.pas}"
-										data-spo2="${cliente.spo2}"
-										data-fc="${cliente.fc}"
-										data-temp="${cliente.temp}"
-										data-peso="${cliente.peso}"
-										data-talla="${cliente.talla}">
+										data-fecnac="${cliente.fec_nac || ''}"
+										data-sexo="${cliente.sexo || ''}"
+										data-estado_civil="${cliente.estado_civil || ''}"
+										data-pad="${cliente.pad || ''}"
+										data-pas="${cliente.pas || ''}"
+										data-spo2="${cliente.spo2 || ''}"
+										data-fc="${cliente.fc || ''}"
+										data-temp="${cliente.temp || ''}"
+										data-peso="${cliente.peso || ''}"
+										data-talla="${cliente.talla || ''}">
 										<i class="fa fa-pencil" aria-hidden="true"></i>
 									</button>
 									<?php } ?>
@@ -549,11 +568,17 @@ $resultado = $conexion->query("SELECT
 				});
 			}
 
+			// Función para formatear fecha
+			function formatDate(dateString) {
+				if (!dateString) return '';
+				var parts = dateString.split('-');
+				return parts[2] + '-' + parts[1] + '-' + parts[0];
+			}
+
 			// Función para activar eventos de los botones
 			function activarEventosBotones() {
 				$(".btnEliminar").click(function() {
 					idEliminar = $(this).data('id');
-					fila = $(this).closest('tr');
 				});
 
 				$(".eliminarFila").click(function() {
@@ -567,7 +592,7 @@ $resultado = $conexion->query("SELECT
 					}).done(function(response) {
 						if (response.success) {
 							$('#modalEliminar').modal('hide');
-							actualizarTablaClientes(true); // Forzar actualización inmediata
+							actualizarTablaClientes();
 						} else {
 							alert('Error al desactivar el cliente: ' + response.message);
 						}
@@ -584,10 +609,12 @@ $resultado = $conexion->query("SELECT
 					$("#ape1Edit").val($(this).data('ape1'));
 					$("#ape2Edit").val($(this).data('ape2'));
 					$("#nrodocEdit").val($(this).data('nrodoc'));
-					$("#id_tipodocEdit").val($(this).data('id_tipodoc'));
-					$("#fec_nacEdit").val($(this).data('fecnac'));
+					$("#id_tipodocEdit").val($(this).data('id_tipodoc') || '1');
+					$("#fec_nacEdit").val($(this).data('fec_nac'));
 					$("#sexoEdit").val($(this).data('sexo'));
 					$("#estado_civilEdit").val($(this).data('estado_civil'));
+					
+					// Asignar valores de signos vitales sin valores por defecto
 					$("#padEdit").val($(this).data('pad'));
 					$("#pasEdit").val($(this).data('pas'));
 					$("#spo2Edit").val($(this).data('spo2'));
@@ -595,23 +622,34 @@ $resultado = $conexion->query("SELECT
 					$("#tempEdit").val($(this).data('temp'));
 					$("#pesoEdit").val($(this).data('peso'));
 					$("#tallaEdit").val($(this).data('talla'));
+
+					// Actualizar la validación del documento
+					actualizarValidacionDocumento(document.getElementById('id_tipodocEdit'), 'nrodocEdit');
 				});
+
+				// Remover el evento de limpieza del modal de edición
+				$('#modalEditar').off('hidden.bs.modal');
 			}
 
 			var idEliminar = -1;
-			var fila;
 
 			// Activar eventos iniciales
 			activarEventosBotones();
 
-			// Configurar intervalo de actualización
-			setInterval(function() {
-				actualizarTablaClientes(false);
-			}, 5000);
+			// Primera actualización al cargar la página
+			actualizarTablaClientes();
+
+			// Configurar intervalo de actualización cada 3 segundos
+			setInterval(actualizarTablaClientes, 3000);
 
 			// Limpiar formulario cuando se cierra el modal
 			$('#exampleModal').on('hidden.bs.modal', function () {
 				$("#formIngresar")[0].reset();
+			});
+
+			// Limpiar formulario cuando se cierra el modal de edición
+			$('#modalEditar').on('hidden.bs.modal', function () {
+				$("#formEditar")[0].reset();
 			});
 
 			function myFunction() {

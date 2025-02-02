@@ -99,7 +99,10 @@ date_default_timezone_set('America/Lima');
     </main>
   </body>
 </html>';
-	$mpdf = new \Mpdf\Mpdf();
+	$mpdf = new \Mpdf\Mpdf([
+    'mode' => 'utf-8',
+    'format' => [80, 258],
+]);
 	$mpdf->WriteHTML($html);
 	$mpdf->Output();
 

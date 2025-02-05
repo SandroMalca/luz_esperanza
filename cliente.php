@@ -11,7 +11,30 @@ if ($varsesion2 == null || $varsesion2 == '') {
 	die();
 }
 
-$resultado = $conexion->query("SELECT 
+// Obtener la especialidad del usuario logueado
+$especialidad_usuario = '';
+if ($varsesion != 'Superadmin') {
+	// Mapeo de usuarios a especialidades
+	$especialidades_map = array(
+		'cirugia' => 'Cirugía General',
+		'derma' => 'Dermatología',
+		'endo'=>'Endocrinología',
+		'gastro' => 'Gastroenterología',
+		'medicina' => 'Medicina General',
+		'neuro' => 'Neurología',
+		'nutricion' => 'Nutrición',
+		'obstetricia' => 'Obstetricia',
+		'pediatria' => 'Pediatría',
+		'trauma' => 'Traumatología',
+		'urologia' => 'Urología',
+	);
+	
+	// Obtener la especialidad basada en el nombre de usuario
+	$especialidad_usuario = isset($especialidades_map[$varsesion2]) ? $especialidades_map[$varsesion2] : '';
+}
+
+// Modificar la consulta según el tipo de usuario
+$query_base = "SELECT 
     persona.*, 
     YEAR(CURDATE())-YEAR(persona.fec_nac) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(persona.fec_nac,'%m-%d'), 0, -1) as edad,
     tipo_doc.nombre as tipodoc,
@@ -25,8 +48,16 @@ $resultado = $conexion->query("SELECT
     FROM persona 
     LEFT JOIN tipo_doc ON tipo_doc.id=persona.id_tipodoc 
     LEFT JOIN exploracion_fisica ON exploracion_fisica.id_historia=persona.id
-    WHERE persona.id_tipopersona='2' AND persona.status = 1
-    ORDER BY persona.id DESC");
+    WHERE persona.id_tipopersona='2' AND persona.status = 1";
+
+// Agregar filtro por especialidad si no es Superadmin
+if ($varsesion != 'Superadmin' && !empty($especialidad_usuario)) {
+	$query_base .= " AND persona.especialidad = '".$especialidad_usuario."'";
+}
+
+$query_base .= " ORDER BY persona.id DESC";
+
+$resultado = $conexion->query($query_base);
 
 ?>
 <!DOCTYPE html>
@@ -82,14 +113,15 @@ $resultado = $conexion->query("SELECT
 					<tr>
 						<td>
 							<span id="nombre"><?php echo $mostrar['ape1'] ?> <?php echo $mostrar['ape2'] ?>, <?php echo $mostrar['nombre'] ?> </span><br>
-							<span id="datos" style="display: flex;">
+							<span id="datos" style="display: flex;font-size:medium">
 								<span>
 									Tipo Documento: <?php echo $mostrar['tipodoc'] ?><br>
 									Nro. Doc: <?php echo $mostrar['nrodoc'] ?> <br>
-									Fec. Nac: <?php echo ($mostrar['fec_nac'] && $mostrar['fec_nac'] != '0000-00-00') ? date('d-m-Y', strtotime($mostrar['fec_nac'])) : ''; ?> 
-                					<?php echo ($mostrar['edad'] && $mostrar['edad'] > 0) ? '(Edad: ' . $mostrar['edad'] . ' años)' : ''; ?> <br>
+									Fec. Nac: <?php echo ($mostrar['fec_nac'] && $mostrar['fec_nac'] != '0000-00-00') ? date('d-m-Y', strtotime($mostrar['fec_nac'])) : ''; ?>
+									<?php echo ($mostrar['edad'] && $mostrar['edad'] > 0) ? '(Edad: ' . $mostrar['edad'] . ' años)' : ''; ?> <br>
 									Estado Civil: <?php echo $mostrar['estado_civil'] ?> <br>
 									Sexo: <?php echo $mostrar['sexo'] ?> <br>
+									<b>Especialidad: <?php echo $mostrar['especialidad'] ?></b><br>
 								</span>
 								<span style="margin-left: 40px;">
 									PAD: <?php echo ($mostrar['pad'] == 0) ? '0' : $mostrar['pad']; ?> mmHg<br>
@@ -104,7 +136,7 @@ $resultado = $conexion->query("SELECT
 						</td>
 						<td>
 							<?php if ($varsesion != 'Admin') { ?>
-								<button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" 
+								<button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar"
 									data-id="<?php echo $mostrar['id'] ?>"
 									data-nombre="<?php echo $mostrar['nombre'] ?>"
 									data-ape1="<?php echo $mostrar['ape1'] ?>"
@@ -114,6 +146,7 @@ $resultado = $conexion->query("SELECT
 									data-fec_nac="<?php echo $mostrar['fec_nac'] ?>"
 									data-sexo="<?php echo $mostrar['sexo'] ?>"
 									data-estado_civil="<?php echo $mostrar['estado_civil'] ?>"
+									data-especialidad="<?php echo $mostrar['especialidad'] ?>"
 									data-pad="<?php echo $mostrar['pad'] ?>"
 									data-pas="<?php echo $mostrar['pas'] ?>"
 									data-spo2="<?php echo $mostrar['spo2'] ?>"
@@ -209,6 +242,18 @@ $resultado = $conexion->query("SELECT
 						</div>
 						<br>
 						<div>
+							<label for="especialidad">Especialidad</label>
+							<select name="especialidad" id="especialidad" class="form-control">
+								<?php
+								$resultado = $conexion->query("SELECT DISTINCT especialidad FROM persona WHERE especialidad IS NOT NULL AND especialidad != '' ORDER BY especialidad ASC");
+								while ($f = mysqli_fetch_array($resultado)) {
+								?>
+									<option value="<?php echo $f['especialidad'] ?>"><?php echo $f['especialidad'] ?></option>
+								<?php } ?>
+							</select>
+						</div>
+						<br>
+						<div>
 							<label for="estado_civil">Estado Civil</label>
 							<select name="estado_civil" id="estado_civil" class="form-control">
 								<option value="Soltero">Soltero</option>
@@ -223,27 +268,27 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="pad">Presión Arterial Diastólica (PAD)</label>
-							<input type="number" step=".01" id="pad" name="pad" max="200" class="form-control" placeholder="Ingrese la presión arterial">
+							<input type="number" step=".01" id="pad" name="pad" max="300" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
 							<label for="pas">Presión Arterial Sistólica (PAS)</label>
-							<input type="number" step=".01" id="pas" name="pas" max="200" class="form-control" placeholder="Ingrese la presión arterial">
+							<input type="number" step=".01" id="pas" name="pas" max="300" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
 							<label for="spo2">Saturación de Oxígeno (SpO2)</label>
-							<input type="number" step=".01" id="spo2" name="spo2" max="100" class="form-control" placeholder="Ingrese la saturación de oxígeno">
+							<input type="number" step=".01" id="spo2" name="spo2" max="300" class="form-control" placeholder="Ingrese la saturación de oxígeno">
 						</div>
 						<br>
 						<div>
 							<label for="fc">Frecuencia Cardíaca (FC)</label>
-							<input type="number" step=".01" id="fc" name="fc" max="200" class="form-control" placeholder="Ingrese la frecuencia cardíaca">
+							<input type="number" step=".01" id="fc" name="fc" max="300" class="form-control" placeholder="Ingrese la frecuencia cardíaca">
 						</div>
 						<br>
 						<div>
 							<label for="temp">Temperatura</label>
-							<input type="number" step=".01" id="temp" name="temp" max="100.0" class="form-control" placeholder="Ingrese la temperatura">
+							<input type="number" step=".01" id="temp" name="temp" max="300.0" class="form-control" placeholder="Ingrese la temperatura">
 						</div>
 						<br>
 						<div>
@@ -253,7 +298,7 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="talla">Talla (cm)</label>
-							<input type="number" step=".01" id="talla" name="talla" max="250" class="form-control" placeholder="Ingrese la talla">
+							<input type="number" step=".01" id="talla" name="talla" max="300" class="form-control" placeholder="Ingrese la talla">
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -321,6 +366,18 @@ $resultado = $conexion->query("SELECT
 						</div>
 						<br>
 						<div>
+							<label for="especialidadEdit">Especialidad</label>
+							<select name="especialidad" id="especialidadEdit" class="form-control">
+								<?php
+								$resultado = $conexion->query("SELECT DISTINCT especialidad FROM persona WHERE especialidad IS NOT NULL AND especialidad != '' ORDER BY especialidad ASC");
+								while ($f = mysqli_fetch_array($resultado)) {
+								?>
+									<option value="<?php echo $f['especialidad'] ?>"><?php echo $f['especialidad'] ?></option>
+								<?php } ?>
+							</select>
+						</div>
+						<br>
+						<div>
 							<label for="estado_civilEdit">Estado Civil</label>
 							<select name="estado_civil" id="estado_civilEdit" class="form-control" empty>
 								<option value="Soltero">Soltero</option>
@@ -335,27 +392,27 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="padEdit">Presión Arterial Diastólica (PAD)</label>
-							<input type="number" step=".01" id="padEdit" name="pad" max="200" class="form-control" placeholder="Ingrese la presión arterial">
+							<input type="number" step=".01" id="padEdit" name="pad" max="300" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
 							<label for="pasEdit">Presión Arterial Sistólica (PAS)</label>
-							<input type="number" step=".01" id="pasEdit" name="pas" max="200" class="form-control" placeholder="Ingrese la presión arterial">
+							<input type="number" step=".01" id="pasEdit" name="pas" max="300" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
 							<label for="spo2Edit">Saturación de Oxígeno (SpO2)</label>
-							<input type="number" step=".01" id="spo2Edit" name="spo2" max="100" class="form-control" placeholder="Ingrese la saturación de oxígeno" empty>
+							<input type="number" step=".01" id="spo2Edit" name="spo2" max="300" class="form-control" placeholder="Ingrese la saturación de oxígeno" empty>
 						</div>
 						<br>
 						<div>
 							<label for="fcEdit">Frecuencia Cardíaca (FC)</label>
-							<input type="number" step=".01" id="fcEdit" name="fc" max="200" class="form-control" placeholder="Ingrese la frecuencia cardíaca" empty>
+							<input type="number" step=".01" id="fcEdit" name="fc" max="300" class="form-control" placeholder="Ingrese la frecuencia cardíaca" empty>
 						</div>
 						<br>
 						<div>
 							<label for="tempEdit">Temperatura</label>
-							<input type="number" step=".01" id="tempEdit" name="temp" max="100.0" class="form-control" placeholder="Ingrese la temperatura" empty>
+							<input type="number" step=".01" id="tempEdit" name="temp" max="300.0" class="form-control" placeholder="Ingrese la temperatura" empty>
 						</div>
 						<br>
 						<div>
@@ -365,7 +422,7 @@ $resultado = $conexion->query("SELECT
 						<br>
 						<div>
 							<label for="tallaEdit">Talla (cm)</label>
-							<input type="number" step=".01" id="tallaEdit" name="talla" max="250" class="form-control" placeholder="Ingrese la talla" empty>
+							<input type="number" step=".01" id="tallaEdit" name="talla" max="300" class="form-control" placeholder="Ingrese la talla" empty>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -418,13 +475,15 @@ $resultado = $conexion->query("SELECT
 		}
 
 		$(document).ready(function() {
-			let ultimaActualizacion = new Date().getTime();
-			let ultimosClientes = [];
+			var ultimaActualizacion = 0;
+			var ultimosClientes = [];
+			var especialidadUsuario = '<?php echo $especialidad_usuario; ?>';
+			var esAdmin = '<?php echo $varsesion; ?>' === 'Superadmin';
 
 			// Manejar el envío del formulario de ingreso
 			$("#formIngresar").on('submit', function(e) {
 				e.preventDefault();
-				
+
 				$.ajax({
 					url: 'php/ingresarcliente.php',
 					method: 'POST',
@@ -447,16 +506,25 @@ $resultado = $conexion->query("SELECT
 			// Manejar el envío del formulario de edición
 			$("#formEditar").on('submit', function(e) {
 				e.preventDefault();
-				
+				var formData = $(this).serialize();
+
 				$.ajax({
 					url: 'php/editarcliente.php',
 					method: 'POST',
-					data: $(this).serialize(),
+					data: formData,
 					dataType: 'json'
 				}).done(function(response) {
 					if (response.success) {
 						$('#modalEditar').modal('hide');
-						actualizarTablaClientes(true); // Forzar actualización después de editar
+						// Forzar actualización inmediata
+						$.ajax({
+							url: 'php/obtener_clientes.php',
+							method: 'GET',
+							dataType: 'json',
+							cache: false
+						}).done(function(response) {
+							actualizarTablaHTML(response);
+						});
 					} else {
 						alert('Error al actualizar el cliente: ' + response.message);
 					}
@@ -466,10 +534,100 @@ $resultado = $conexion->query("SELECT
 				});
 			});
 
+			// Función para actualizar el HTML de la tabla
+			function actualizarTablaHTML(response) {
+				var tablaHTML = `
+					<tr class="header">
+						<th style="width:60%;">Datos del Paciente</th>
+						<th style="width:40%;">Acciones</th>
+					</tr>
+				`;
+
+				response.forEach(function(cliente) {
+					// Aplicar filtro de especialidad
+					if (!esAdmin && cliente.especialidad !== especialidadUsuario) {
+						return;
+					}
+
+					tablaHTML += `
+						<tr>
+							<td>
+								<span id="nombre">${cliente.ape1} ${cliente.ape2 || ''}, ${cliente.nombre}</span><br>
+								<span id="datos" style="display: flex;font-size:medium">
+									<span>
+										Tipo Documento: ${cliente.tipodoc}<br>
+										Nro. Doc: ${cliente.nrodoc || ''}<br>
+										Fec. Nac: ${(cliente.fec_nac && cliente.fec_nac != '0000-00-00') ? formatDate(cliente.fec_nac) : ''} 
+										${(cliente.edad && cliente.edad > 0) ? '(Edad: ' + cliente.edad + ' años)' : ''}<br>
+										Estado Civil: ${cliente.estado_civil || ''}<br>
+										Sexo: ${cliente.sexo || ''}<br>
+										<b>Especialidad: ${cliente.especialidad}</b><br>
+									</span>
+									<span style="margin-left: 40px;">
+										PAD: ${cliente.pad || '0'} mmHg<br>
+										PAS: ${cliente.pas || '0'} mmHg<br>
+										SpO2: ${cliente.spo2 || '0'} %<br>
+										FC: ${cliente.fc || '0'} lpm<br>
+										Temperatura: ${cliente.temp || '0'} °C<br>
+										Peso: ${cliente.peso || '0'} kg<br>
+										Talla: ${cliente.talla || '0'} cm<br>
+									</span>
+								</span>
+							</td>
+							<td>
+								<?php if ($varsesion != 'Admin') { ?>
+								<button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" 
+									data-id="${cliente.id}" 
+									data-nombre="${cliente.nombre}" 
+									data-ape1="${cliente.ape1}" 
+									data-ape2="${cliente.ape2 || ''}" 
+									data-nrodoc="${cliente.nrodoc || ''}" 
+									data-id_tipodoc="${cliente.id_tipodoc}" 
+									data-fec_nac="${cliente.fec_nac || ''}"
+									data-sexo="${cliente.sexo || ''}"
+									data-especialidad="${cliente.especialidad}"
+									data-estado_civil="${cliente.estado_civil || ''}"
+									data-pad="${cliente.pad || ''}"
+									data-pas="${cliente.pas || ''}"
+									data-spo2="${cliente.spo2 || ''}"
+									data-fc="${cliente.fc || ''}"
+									data-temp="${cliente.temp || ''}"
+									data-peso="${cliente.peso || ''}"
+									data-talla="${cliente.talla || ''}">
+									<i class="fa fa-pencil" aria-hidden="true"></i>
+								</button>
+								<?php } ?>
+								<?php if ($varsesion != 'Admin') { ?>
+								<button class="btn btn-danger btn-small btnEliminar" data-toggle="modal" data-target="#modalEliminar" 
+									data-id="${cliente.id}">
+									<i class="fa fa-trash" aria-hidden="true"></i>
+								</button>
+								<?php } ?>
+								<a href="historia.php?id=${cliente.id}">
+									<button class="btn btn-warning btn-small">
+										<i class="fa fa-medkit" aria-hidden="true"></i>
+									</button>
+								</a>
+								<?php if ($varsesion != 'Admin') { ?>
+								<a href="pago.php?id=${cliente.id}" style="text-decoration: none;">
+									<button class="btn btn-success btn-small">
+										<i class="fa fa-money" aria-hidden="true"></i>
+									</button>
+								</a>
+								<?php } ?>
+							</td>
+						</tr>
+					`;
+				});
+
+				$("#myTable").html(tablaHTML);
+				activarEventosBotones();
+			}
+
 			// Función para actualizar la tabla de clientes
 			function actualizarTablaClientes(forzarActualizacion = false) {
 				const ahora = new Date().getTime();
-				if (!forzarActualizacion && ahora - ultimaActualizacion < 1000) return; // Evitar actualizaciones muy frecuentes
+				if (!forzarActualizacion && ahora - ultimaActualizacion < 500) return;
 				
 				ultimaActualizacion = ahora;
 				
@@ -477,94 +635,14 @@ $resultado = $conexion->query("SELECT
 					url: 'php/obtener_clientes.php',
 					method: 'GET',
 					dataType: 'json',
-					cache: false // Evitar caché
+					cache: false
 				}).done(function(response) {
-					// Si se fuerza la actualización, no verificar si los datos son idénticos
 					if (!forzarActualizacion && JSON.stringify(response) === JSON.stringify(ultimosClientes)) {
-						return; // No actualizar si los datos son idénticos
+						return;
 					}
 					
-					ultimosClientes = response; // Guardar los nuevos datos
-					
-					var tablaHTML = `
-						<tr class="header">
-							<th style="width:60%;">Datos del Paciente</th>
-							<th style="width:40%;">Acciones</th>
-						</tr>
-					`;
-
-					response.forEach(function(cliente) {
-						tablaHTML += `
-							<tr>
-								<td>
-									<span id="nombre">${cliente.ape1} ${cliente.ape2 || ''}, ${cliente.nombre}</span><br>
-									<span id="datos" style="display: flex;">
-										<span>
-											Tipo Documento: ${cliente.tipodoc}<br>
-											Nro. Doc: ${cliente.nrodoc || ''}<br>
-											Fec. Nac: ${(cliente.fec_nac && cliente.fec_nac != '0000-00-00') ? formatDate(cliente.fec_nac) : ''} 
-											${(cliente.edad && cliente.edad > 0) ? '(Edad: ' + cliente.edad + ' años)' : ''}<br>
-											Estado Civil: ${cliente.estado_civil || ''}<br>
-											Sexo: ${cliente.sexo || ''}<br>
-										</span>
-										<span style="margin-left: 40px;">
-											PAD: ${cliente.pad || '0'} mmHg<br>
-											PAS: ${cliente.pas || '0'} mmHg<br>
-											SpO2: ${cliente.spo2 || '0'} %<br>
-											FC: ${cliente.fc || '0'} lpm<br>
-											Temperatura: ${cliente.temp || '0'} °C<br>
-											Peso: ${cliente.peso || '0'} kg<br>
-											Talla: ${cliente.talla || '0'} cm<br>
-										</span>
-									</span>
-								</td>
-								<td>
-									<?php if ($varsesion != 'Admin') { ?>
-									<button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" 
-										data-id="${cliente.id}" 
-										data-nombre="${cliente.nombre}" 
-										data-ape1="${cliente.ape1}" 
-										data-ape2="${cliente.ape2 || ''}" 
-										data-nrodoc="${cliente.nrodoc || ''}" 
-										data-id_tipodoc="${cliente.id_tipodoc}" 
-										data-fecnac="${cliente.fec_nac || ''}"
-										data-sexo="${cliente.sexo || ''}"
-										data-estado_civil="${cliente.estado_civil || ''}"
-										data-pad="${cliente.pad || ''}"
-										data-pas="${cliente.pas || ''}"
-										data-spo2="${cliente.spo2 || ''}"
-										data-fc="${cliente.fc || ''}"
-										data-temp="${cliente.temp || ''}"
-										data-peso="${cliente.peso || ''}"
-										data-talla="${cliente.talla || ''}">
-										<i class="fa fa-pencil" aria-hidden="true"></i>
-									</button>
-									<?php } ?>
-									<?php if ($varsesion != 'Admin') { ?>
-									<button class="btn btn-danger btn-small btnEliminar" data-toggle="modal" data-target="#modalEliminar" 
-										data-id="${cliente.id}">
-										<i class="fa fa-trash" aria-hidden="true"></i>
-									</button>
-									<?php } ?>
-									<a href="historia.php?id=${cliente.id}">
-										<button class="btn btn-warning btn-small">
-											<i class="fa fa-medkit" aria-hidden="true"></i>
-										</button>
-									</a>
-									<?php if ($varsesion != 'Admin') { ?>
-									<a href="pago.php?id=${cliente.id}" style="text-decoration: none;">
-										<button class="btn btn-success btn-small">
-											<i class="fa fa-money" aria-hidden="true"></i>
-										</button>
-									</a>
-									<?php } ?>
-								</td>
-							</tr>
-						`;
-					});
-
-					$("#myTable").html(tablaHTML);
-					activarEventosBotones();
+					ultimosClientes = response;
+					actualizarTablaHTML(response);
 				});
 			}
 
@@ -612,6 +690,7 @@ $resultado = $conexion->query("SELECT
 					$("#id_tipodocEdit").val($(this).data('id_tipodoc') || '1');
 					$("#fec_nacEdit").val($(this).data('fec_nac'));
 					$("#sexoEdit").val($(this).data('sexo'));
+					$("#especialidadEdit").val($(this).data('especialidad'));
 					$("#estado_civilEdit").val($(this).data('estado_civil'));
 					
 					// Asignar valores de signos vitales sin valores por defecto
@@ -637,18 +716,18 @@ $resultado = $conexion->query("SELECT
 			activarEventosBotones();
 
 			// Primera actualización al cargar la página
-			actualizarTablaClientes();
+			actualizarTablaClientes(true);
 
-			// Configurar intervalo de actualización cada 3 segundos
-			setInterval(actualizarTablaClientes, 3000);
+			// Actualización automática cada 2 segundos
+			setInterval(actualizarTablaClientes, 2000);
 
 			// Limpiar formulario cuando se cierra el modal
-			$('#exampleModal').on('hidden.bs.modal', function () {
+			$('#exampleModal').on('hidden.bs.modal', function() {
 				$("#formIngresar")[0].reset();
 			});
 
 			// Limpiar formulario cuando se cierra el modal de edición
-			$('#modalEditar').on('hidden.bs.modal', function () {
+			$('#modalEditar').on('hidden.bs.modal', function() {
 				$("#formEditar")[0].reset();
 			});
 

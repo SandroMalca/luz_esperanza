@@ -209,7 +209,7 @@ if ($varsesion != 'Superadmin') {
             <div class="form-group">
               <label for="acceso">Tipo de Acceso</label>
               <select name="acceso" id="acceso" class="form-control">
-                <option value="Superadmin">Administrador</option>
+                <option value="Superadmin">Admin</option>                
                 <option value="Admin">Doctor</option>
               </select>
             </div>
@@ -236,15 +236,15 @@ if ($varsesion != 'Superadmin') {
           </div>
           <div class="modal-body">
             <div>
-              <label for="user">User <span style="color: red">*</span></label>
-              <input type="text" name="user" id="user" placeholder="User" class="form-control">
-              <input type="hidden" name="iduser" id="iduserEdit" class="form-control">
+              <label for="userEdit">Usuario <span style="color: red">*</span></label>
+              <input type="text" name="user" id="userEdit" placeholder="Usuario" class="form-control" required>
+              <input type="hidden" name="id" id="iduserEdit" class="form-control">
             </div>
             <br>
             <div>
-              <label for="acceso">Acceso</label>
+              <label for="accesoEdit">Tipo de Acceso</label>
               <select name="acceso" id="accesoEdit" class="form-control">
-                <option value="Superadmin">Administrador</option>
+                <option value="Superadmin">Admin</option>
                 <option value="Admin">Doctor</option>
               </select>
             </div>
@@ -459,7 +459,7 @@ if ($varsesion != 'Superadmin') {
           var user = $(this).data('user');
           var acceso = $(this).data('acceso');
           $("#iduserEdit").val(id);
-          $("#user").val(user);
+          $("#userEdit").val(user);
           $("#accesoEdit").val(acceso);
         });
 
@@ -569,11 +569,14 @@ if ($varsesion != 'Superadmin') {
         }).done(function(response) {
           if (response.success) {
             $('#exampleModalUser').modal('hide');
-            actualizarTablaUsuarios();
             $("#formIngresarUser")[0].reset();
+            actualizarTablaUsuarios();
+          } else {
+            alert('Error: ' + response.message);
           }
-        }).fail(function(xhr) {
-          alert('Error al procesar la solicitud: ' + xhr.responseText);
+        }).fail(function(xhr, status, error) {
+          console.error('Error:', xhr.responseText);
+          alert('Error al procesar la solicitud. Por favor, inténtelo de nuevo.');
         });
       });
 

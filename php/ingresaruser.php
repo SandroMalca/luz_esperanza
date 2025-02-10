@@ -30,9 +30,9 @@ try {
         password, 
         acceso
     ) VALUES (
-        '".$_POST['user']."',
-        '".$_POST['password']."',
-        '".$_POST['acceso']."'
+        '".mysqli_real_escape_string($conexion,$_POST['user'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['password'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['acceso'])."'
     )") or throw new Exception($conexion->error);
 
     $response['success'] = true;

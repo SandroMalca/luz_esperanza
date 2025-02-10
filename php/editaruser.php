@@ -18,9 +18,9 @@ try {
     }
 
     $conexion->query("UPDATE logueo SET 
-        user = '".$_POST['user']."', 
-        acceso = '".$_POST['acceso']."'
-        WHERE id = ".$_POST['id']) 
+        user = '".mysqli_real_escape_string($conexion,$_POST['user'])."', 
+        acceso = '".mysqli_real_escape_string($conexion,$_POST['acceso'])."'
+        WHERE id = ".mysqli_real_escape_string($conexion,$_POST['id'])) 
     or throw new Exception($conexion->error);
 
     $response['success'] = true;

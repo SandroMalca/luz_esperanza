@@ -20,9 +20,9 @@ if (!isset($_POST['horario']) || empty($_POST['horario']) || in_array('0', $_POS
 }
 
 $conexion->query("update producto set 
-    nombre='".$_POST['nombre']."', 
-    precio='".$precio."',
-    horario='".$horarios."'
+    nombre='".mysqli_real_escape_string($conexion,$_POST['nombre'])."', 
+    precio='".mysqli_real_escape_string($conexion,$precio)."',
+    horario='".mysqli_real_escape_string($conexion,$horarios)."'
     where id=".$_POST['id']) 
 or die($conexion->error); 
 

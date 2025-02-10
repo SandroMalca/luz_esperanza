@@ -112,25 +112,27 @@ $resultado = $conexion->query($query_base);
 				?>
 					<tr>
 						<td>
-							<span id="nombre"><?php echo $mostrar['ape1'] ?> <?php echo $mostrar['ape2'] ?>, <?php echo $mostrar['nombre'] ?> </span><br>
+							<span id="nombre"><?php echo htmlspecialchars($mostrar['ape1']) ?> <?php echo htmlspecialchars($mostrar['ape2']) ?>, <?php echo htmlspecialchars($mostrar['nombre']) ?> 
+							</span><br>
 							<span id="datos" style="display: flex;font-size:medium">
 								<span>
-									Tipo Documento: <?php echo $mostrar['tipodoc'] ?><br>
-									Nro. Doc: <?php echo $mostrar['nrodoc'] ?> <br>
+									Tipo Documento: <?php echo htmlspecialchars($mostrar['tipodoc']) ?><br>
+									Nro. Doc: <?php echo htmlspecialchars($mostrar['nrodoc']) ?> <br>
 									Fec. Nac: <?php echo ($mostrar['fec_nac'] && $mostrar['fec_nac'] != '0000-00-00') ? date('d-m-Y', strtotime($mostrar['fec_nac'])) : ''; ?>
-									<?php echo ($mostrar['edad'] && $mostrar['edad'] > 0) ? '(Edad: ' . $mostrar['edad'] . ' años)' : ''; ?> <br>
-									Estado Civil: <?php echo $mostrar['estado_civil'] ?> <br>
-									Sexo: <?php echo $mostrar['sexo'] ?> <br>
-									<b>Especialidad: <?php echo $mostrar['especialidad'] ?></b><br>
+									<?php echo (htmlspecialchars($mostrar['edad'] && $mostrar['edad'] > 0)) ? '(Edad: ' . $mostrar['edad'] . ' años)' : ''; ?> <br>
+									Estado Civil: <?php echo htmlspecialchars($mostrar['estado_civil']) ?> <br>
+									Sexo: <?php echo htmlspecialchars($mostrar['sexo']) ?> <br>
+									<b>Especialidad: <?php echo htmlspecialchars($mostrar['especialidad']) ?></b><br>
 								</span>
 								<span style="margin-left: 40px;">
-									PAD: <?php echo ($mostrar['pad'] == 0) ? '0' : $mostrar['pad']; ?> mmHg<br>
-									PAS: <?php echo ($mostrar['pas'] == 0) ? '0' : $mostrar['pas']; ?> mmHg<br>
-									SpO2: <?php echo ($mostrar['spo2'] == 0) ? '0' : $mostrar['spo2']; ?> %<br>
-									FC: <?php echo ($mostrar['fc'] == 0) ? '0' : $mostrar['fc']; ?> lpm<br>
-									Temperatura: <?php echo ($mostrar['temp'] == 0) ? '0' : $mostrar['temp']; ?> °C<br>
-									Peso: <?php echo ($mostrar['peso'] == 0) ? '0' : $mostrar['peso']; ?> kg<br>
-									Talla: <?php echo ($mostrar['talla'] == 0) ? '0' : $mostrar['talla']; ?> cm<br>
+									
+									PAS: <?php echo htmlspecialchars(($mostrar['pas'] == 0) ? '0' : $mostrar['pas']); ?> mmHg<br>
+									PAD: <?php echo htmlspecialchars(($mostrar['pad'] == 0) ? '0' : $mostrar['pad']); ?> mmHg<br>
+									SpO2: <?php echo htmlspecialchars(($mostrar['spo2'] == 0) ? '0' : $mostrar['spo2']); ?> %<br>
+									FC: <?php echo htmlspecialchars(($mostrar['fc'] == 0) ? '0' : $mostrar['fc']); ?> lpm<br>
+									Temperatura: <?php echo htmlspecialchars(($mostrar['temp'] == 0) ? '0' : $mostrar['temp']); ?> °C<br>
+									Peso: <?php echo htmlspecialchars(($mostrar['peso'] == 0) ? '0' : $mostrar['peso']); ?> kg<br>
+									Talla: <?php echo htmlspecialchars(($mostrar['talla'] == 0) ? '0' : $mostrar['talla']); ?> cm<br>
 								</span>
 							</span>
 						</td>
@@ -218,7 +220,7 @@ $resultado = $conexion->query($query_base);
 								$resultado = $conexion->query("select * from tipo_doc");
 								while ($f = mysqli_fetch_array($resultado)) {
 								?>
-									<option value="<?php echo $f['id'] ?>"><?php echo $f['nombre'] ?></option>
+									<option value="<?php echo htmlspecialchars($f['id']) ?>"><?php echo htmlspecialchars($f['nombre']) ?></option>
 								<?php } ?>
 							</select>
 						</div>
@@ -248,7 +250,7 @@ $resultado = $conexion->query($query_base);
 								$resultado = $conexion->query("SELECT DISTINCT especialidad FROM persona WHERE especialidad IS NOT NULL AND especialidad != '' ORDER BY especialidad ASC");
 								while ($f = mysqli_fetch_array($resultado)) {
 								?>
-									<option value="<?php echo $f['especialidad'] ?>"><?php echo $f['especialidad'] ?></option>
+									<option value="<?php echo htmlspecialchars($f['especialidad']) ?>"><?php echo htmlspecialchars($f['especialidad']) ?></option>
 								<?php } ?>
 							</select>
 						</div>
@@ -266,14 +268,15 @@ $resultado = $conexion->query($query_base);
 						<br>
 						<span style="font-weight: bold;">SIGNOS VITALES:</span>
 						<br>
-						<div>
-							<label for="pad">Presión Arterial Diastólica (PAD)</label>
-							<input type="number" step=".01" id="pad" name="pad" max="300" class="form-control" placeholder="Ingrese la presión arterial">
-						</div>
-						<br>
+						
 						<div>
 							<label for="pas">Presión Arterial Sistólica (PAS)</label>
 							<input type="number" step=".01" id="pas" name="pas" max="300" class="form-control" placeholder="Ingrese la presión arterial">
+						</div>
+						<br>
+						<div>
+							<label for="pad">Presión Arterial Diastólica (PAD)</label>
+							<input type="number" step=".01" id="pad" name="pad" max="300" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
@@ -390,14 +393,15 @@ $resultado = $conexion->query($query_base);
 						<br>
 						<span style="font-weight: bold;">SIGNOS VITALES:</span>
 						<br>
-						<div>
-							<label for="padEdit">Presión Arterial Diastólica (PAD)</label>
-							<input type="number" step=".01" id="padEdit" name="pad" max="300" class="form-control" placeholder="Ingrese la presión arterial">
-						</div>
-						<br>
+						
 						<div>
 							<label for="pasEdit">Presión Arterial Sistólica (PAS)</label>
 							<input type="number" step=".01" id="pasEdit" name="pas" max="300" class="form-control" placeholder="Ingrese la presión arterial">
+						</div>
+						<br>
+						<div>
+							<label for="padEdit">Presión Arterial Diastólica (PAD)</label>
+							<input type="number" step=".01" id="padEdit" name="pad" max="300" class="form-control" placeholder="Ingrese la presión arterial">
 						</div>
 						<br>
 						<div>
@@ -479,6 +483,38 @@ $resultado = $conexion->query($query_base);
 			var ultimosClientes = [];
 			var especialidadUsuario = '<?php echo $especialidad_usuario; ?>';
 			var esAdmin = '<?php echo $varsesion; ?>' === 'Superadmin';
+			var busquedaActiva = false;
+			var terminoBusqueda = '';
+
+			// Función para buscar en la tabla
+			function buscarEnTabla(filter) {
+				var table = document.getElementById("myTable");
+				var tr = table.getElementsByTagName("tr");
+
+				for (var i = 0; i < tr.length; i++) {
+					if (i === 0) continue; // Saltar encabezado
+					
+					var td = tr[i].getElementsByTagName("td")[0];
+					if (td) {
+						var txtNombre = td.querySelector("#nombre")?.textContent || '';
+						var txtDatos = td.querySelector("#datos")?.textContent || '';
+						var contenidoCompleto = (txtNombre + ' ' + txtDatos).toUpperCase();
+
+						if (contenidoCompleto.indexOf(filter.toUpperCase()) > -1) {
+							tr[i].style.display = "";
+						} else {
+							tr[i].style.display = "none";
+						}
+					}
+				}
+			}
+
+			// Manejar el evento de búsqueda
+			$("#myInput").on('keyup', function() {
+				busquedaActiva = this.value.length > 0;
+				terminoBusqueda = this.value;
+				buscarEnTabla(terminoBusqueda);
+			});
 
 			// Manejar el envío del formulario de ingreso
 			$("#formIngresar").on('submit', function(e) {
@@ -493,9 +529,9 @@ $resultado = $conexion->query($query_base);
 					if (response.success) {
 						$('#exampleModal').modal('hide');
 						$("#formIngresar")[0].reset();
-						actualizarTablaClientes(); // Actualizar inmediatamente después de insertar
+						actualizarTablaClientes(true); // Forzar actualización inmediata
 					} else {
-						alert('Error al ingresar el cliente: ' + response.message);
+						alert('Error al ingresar el paciente: ' + response.message);
 					}
 				}).fail(function(xhr) {
 					console.error('Error:', xhr.responseText);
@@ -516,17 +552,9 @@ $resultado = $conexion->query($query_base);
 				}).done(function(response) {
 					if (response.success) {
 						$('#modalEditar').modal('hide');
-						// Forzar actualización inmediata
-						$.ajax({
-							url: 'php/obtener_clientes.php',
-							method: 'GET',
-							dataType: 'json',
-							cache: false
-						}).done(function(response) {
-							actualizarTablaHTML(response);
-						});
+						actualizarTablaClientes(true); // Forzar actualización inmediata
 					} else {
-						alert('Error al actualizar el cliente: ' + response.message);
+						alert('Error al actualizar el paciente: ' + response.message);
 					}
 				}).fail(function(xhr) {
 					console.error('Error:', xhr.responseText);
@@ -534,7 +562,7 @@ $resultado = $conexion->query($query_base);
 				});
 			});
 
-			// Función para actualizar el HTML de la tabla
+			// Función para actualizar la tabla HTML
 			function actualizarTablaHTML(response) {
 				var tablaHTML = `
 					<tr class="header">
@@ -564,8 +592,9 @@ $resultado = $conexion->query($query_base);
 										<b>Especialidad: ${cliente.especialidad}</b><br>
 									</span>
 									<span style="margin-left: 40px;">
-										PAD: ${cliente.pad || '0'} mmHg<br>
+										
 										PAS: ${cliente.pas || '0'} mmHg<br>
+										PAD: ${cliente.pad || '0'} mmHg<br>
 										SpO2: ${cliente.spo2 || '0'} %<br>
 										FC: ${cliente.fc || '0'} lpm<br>
 										Temperatura: ${cliente.temp || '0'} °C<br>
@@ -622,6 +651,11 @@ $resultado = $conexion->query($query_base);
 
 				$("#myTable").html(tablaHTML);
 				activarEventosBotones();
+
+				// Reaplicar búsqueda si está activa
+				if (busquedaActiva) {
+					buscarEnTabla(terminoBusqueda);
+				}
 			}
 
 			// Función para actualizar la tabla de clientes
@@ -718,8 +752,8 @@ $resultado = $conexion->query($query_base);
 			// Primera actualización al cargar la página
 			actualizarTablaClientes(true);
 
-			// Actualización automática cada 2 segundos
-			setInterval(actualizarTablaClientes, 2000);
+			// Actualización automática cada 5 segundos (aumentado de 2 a 5 segundos)
+			setInterval(actualizarTablaClientes, 5000);
 
 			// Limpiar formulario cuando se cierra el modal
 			$('#exampleModal').on('hidden.bs.modal', function() {
@@ -732,21 +766,40 @@ $resultado = $conexion->query($query_base);
 			});
 
 			function myFunction() {
-				var input, filter, table, tr, td, i, txtValue;
+				var input, filter, table, tr, td, i, j, txtValue;
 				input = document.getElementById("myInput");
 				filter = input.value.toUpperCase();
 				table = document.getElementById("myTable");
 				tr = table.getElementsByTagName("tr");
 
+				// Recorrer todas las filas
 				for (i = 0; i < tr.length; i++) {
+					// Saltar la fila del encabezado
+					if (i === 0) continue;
+					
 					td = tr[i].getElementsByTagName("td")[0];
 					if (td) {
-						txtValue = td.textContent || td.innerText;
-						if (txtValue.toUpperCase().indexOf(filter) > -1) {
-							tr[i].style.display = "";
-						} else {
-							tr[i].style.display = "none";
+						let mostrar = false;
+						// Buscar en nombre completo
+						let nombre = td.querySelector("#nombre");
+						if (nombre) {
+							txtValue = nombre.textContent || nombre.innerText;
+							if (txtValue.toUpperCase().indexOf(filter) > -1) {
+								mostrar = true;
+							}
 						}
+						
+						// Buscar en datos adicionales
+						let datos = td.querySelector("#datos");
+						if (datos) {
+							txtValue = datos.textContent || datos.innerText;
+							if (txtValue.toUpperCase().indexOf(filter) > -1) {
+								mostrar = true;
+							}
+						}
+
+						// Mostrar u ocultar la fila
+						tr[i].style.display = mostrar ? "" : "none";
 					}
 				}
 			}

@@ -80,8 +80,8 @@ $resultado2 = $conexion->query("select historia.* from historia where id_cliente
                 Sexo: <?php echo $mostrar['sexo'] ?> <br>
                 Estado Civil: <?php echo $mostrar['estado_civil'] ?> <br>
                 <br><h4>SIGNOS VITALES</h4>
-                PAD: <?php echo $mostrar['pad'] ?> mmHg<br>
                 PAS: <?php echo $mostrar['pas'] ?> mmHg<br>
+                PAD: <?php echo $mostrar['pad'] ?> mmHg<br>
                 SpO2: <?php echo $mostrar['spo2'] ?> %<br>
                 FC: <?php echo $mostrar['fc'] ?> lpm<br>
                 Temperatura: <?php echo $mostrar['temp'] ?> °C<br>

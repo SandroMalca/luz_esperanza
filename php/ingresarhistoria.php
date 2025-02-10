@@ -21,21 +21,21 @@ if (isset($_POST['fecha'])) {
         fec_creacion,
         id_doctor
     ) values (
-        '".$_POST['fecha']."',
-        '".$_POST['id_cliente']."',
-        '".$_POST['motivo']."',
-        '".$_POST['enfermedad_actual']."',
-        '".$_POST['antec_personales']."',
-        '".$_POST['antec_familiar']."',
-        '".$_POST['exam_fisico']."',
-        '".$_POST['diag_presuntivo']."',
-        '".$_POST['exam_auxiliar']."',
-        '".$_POST['laboratorio']."',
-        '".$_POST['otros']."',
-        '".$_POST['diag_definitivo']."',
-        '".$_POST['tratamiento']."',
+        '".mysqli_real_escape_string($conexion,$_POST['fecha'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['id_cliente'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['motivo'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['enfermedad_actual'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['antec_personales'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['antec_familiar'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['exam_fisico'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['diag_presuntivo'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['exam_auxiliar'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['laboratorio'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['otros'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['diag_definitivo'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['tratamiento'])."',
         '$fecha',
-        '".$_POST['id_doctor']."'
+        '".mysqli_real_escape_string($conexion,$_POST['id_doctor'])."'
     )") or die($conexion->error);
 
     header("Location: ../historia.php?id=".$_POST['id_cliente']);

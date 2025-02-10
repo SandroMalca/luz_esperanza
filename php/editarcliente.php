@@ -47,29 +47,29 @@ try {
 
     // Actualizar datos del paciente
     $conexion->query("UPDATE persona SET 
-        nombre = '".$_POST['nombre']."',
-        ape1 = '".$_POST['ape1']."',
-        ape2 = '".$_POST['ape2']."',
-        nrodoc = '".$_POST['nrodoc']."',
-        id_tipodoc = '".$_POST['id_tipodoc']."',
-        fec_nac = '".$_POST['fec_nac']."',
-        sexo = '".$_POST['sexo']."',
-        estado_civil = '".$_POST['estado_civil']."',
-        especialidad = '".$_POST['especialidad']."',
+        nombre = '".mysqli_real_escape_string($conexion,$_POST['nombre'])."',
+        ape1 = '".mysqli_real_escape_string($conexion,$_POST['ape1'])."',
+        ape2 = '".mysqli_real_escape_string($conexion,$_POST['ape2'])."',
+        nrodoc = '".mysqli_real_escape_string($conexion,$_POST['nrodoc'])."',
+        id_tipodoc = '".mysqli_real_escape_string($conexion,$_POST['id_tipodoc'])."',
+        fec_nac = '".mysqli_real_escape_string($conexion,$_POST['fec_nac'])."',
+        sexo = '".mysqli_real_escape_string($conexion,$_POST['sexo'])."',
+        estado_civil = '".mysqli_real_escape_string($conexion,$_POST['estado_civil'])."',
+        especialidad = '".mysqli_real_escape_string($conexion,$_POST['especialidad'])."',
         id_tipopersona = '2'
-        WHERE id = ".$_POST['id']) 
+        WHERE id = ".mysqli_real_escape_string($conexion,$_POST['id'])) 
     or throw new Exception($conexion->error);
 
     // Actualizar signos vitales
     $conexion->query("UPDATE exploracion_fisica SET 
-        pad = '".$_POST['pad']."',
-        pas = '".$_POST['pas']."',
-        spo2 = '".$_POST['spo2']."',
-        fc = '".$_POST['fc']."',
-        temp = '".$_POST['temp']."',
-        peso = '".$_POST['peso']."',
-        talla = '".$_POST['talla']."'
-        WHERE id_historia = ".$_POST['id'])
+        pad = '".mysqli_real_escape_string($conexion,$_POST['pad'])."',
+        pas = '".mysqli_real_escape_string($conexion,$_POST['pas'])."',
+        spo2 = '".mysqli_real_escape_string($conexion,$_POST['spo2'])."',
+        fc = '".mysqli_real_escape_string($conexion,$_POST['fc'])."',
+        temp = '".mysqli_real_escape_string($conexion,$_POST['temp'])."',
+        peso = '".mysqli_real_escape_string($conexion,$_POST['peso'])."',
+        talla = '".mysqli_real_escape_string($conexion,$_POST['talla'])."'
+        WHERE id_historia = ".mysqli_real_escape_string($conexion,$_POST['id']))
     or throw new Exception($conexion->error);
 
     $response['success'] = true;

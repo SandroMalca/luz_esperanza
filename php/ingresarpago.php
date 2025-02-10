@@ -13,11 +13,11 @@ if(isset($_POST['fecha']) && isset($_POST['id_cliente'])) {
         status
     ) values (
         NULL,
-        '".$_POST['fecha']."',
-        '".$_POST['id_cliente']."',
-        '".$_POST['efectivo']."',
-        '".$_POST['tarjeta']."',
-        '".$_POST['descripcion']."',
+        '".mysqli_real_escape_string($conexion,$_POST['fecha'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['id_cliente'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['efectivo'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['tarjeta'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['descripcion'])."',
         '1'
     )") or die($conexion->error);
 

@@ -76,19 +76,20 @@ $resultado6 = $conexion -> query("select * from egreso where fecha='".$fecha."'"
 		<br>
 		<div class="container">
       <?php $fecha = date('d-m-Y') ?>
-      <div align="center"><b><?php echo $fecha ?></b></div><br>
+      <div align="center"><b><?php echo htmlspecialchars($fecha) ?></b></div><br>
 			<div class="row">
         <div class="col-12 col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
           <div align="center"><b>Ingresos del día</b></div> <br><br>
 
-          Efectivo: <?php echo $mostrar4['efectivo']; ?><br>
-          Tarjeta: <?php echo $mostrar4['tarjeta']; ?><br>
+          Efectivo: <?php echo htmlspecialchars($mostrar4['efectivo']); ?><br>
+          Tarjeta: <?php echo htmlspecialchars($mostrar4['tarjeta']); ?><br>
 
           <br><br>
 
         </div>
         <div class="col-12 col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-          <div align="center"><b>Egresos del día</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-danger btn-small" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-minus" aria-hidden="true"></i></button></div>   <br><br>
+          <div align="center"><b>Egresos del día</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-danger btn-small" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-minus" aria-hidden="true"></i></button></div>   <br><br>
 
           <?php while ($mostrar6=mysqli_fetch_assoc($resultado6)) {
            ?>
@@ -102,7 +103,10 @@ $resultado6 = $conexion -> query("select * from egreso where fecha='".$fecha."'"
                  <?php echo $mostrar6['egreso']; ?>
                </td>
                <td style="width: 20%; font-size: 10px; padding-top: 0px; padding-bottom: 0px;">
-                  <button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" data-id="<?php echo $mostrar6['id'] ?>" data-egreso="<?php echo $mostrar6['egreso'] ?>" data-descripcion="<?php echo $mostrar6['descripcion'] ?>"><i class="fa fa-pencil" aria-hidden="true"></i></button> <button class="btn btn-danger btn-small btnEliminar" data-toggle="modal" data-target="#modalEliminar" data-id="<?php echo $mostrar6['id'] ?>"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                  <button class="btn btn-primary btn-small btnEditar" data-toggle="modal" data-target="#modalEditar" data-id="<?php echo htmlspecialchars($mostrar6['id']) ?>" 
+                  data-egreso="<?php echo htmlspecialchars($mostrar6['egreso']) ?>" data-descripcion="<?php echo htmlspecialchars($mostrar6['descripcion']) ?>">
+                  <i class="fa fa-pencil" aria-hidden="true"></i></button> <button class="btn btn-danger btn-small btnEliminar" data-toggle="modal" data-target="#modalEliminar" 
+                  data-id="<?php echo $mostrar6['id'] ?>"><i class="fa fa-trash" aria-hidden="true"></i></button>
                </td>
              </tr>
            </table>
@@ -117,10 +121,10 @@ $resultado6 = $conexion -> query("select * from egreso where fecha='".$fecha."'"
       <br><br>
       <div align="center">
         
-        Total efectivo: <?php echo $totalefectivo; ?><br>
-        Total tarjeta: <?php echo $mostrar4['tarjeta']; ?><br>
+        Total efectivo: <?php echo htmlspecialchars($totalefectivo); ?><br>
+        Total tarjeta: <?php echo htmlspecialchars($mostrar4['tarjeta']); ?><br>
         -------------------------------------- <br>
-        <b>Total del día: <?php echo $total; ?></b><br>
+        <b>Total del día: <?php echo htmlspecialchars($total); ?></b><br>
 
           
       </div><br>
@@ -148,19 +152,19 @@ $resultado6 = $conexion -> query("select * from egreso where fecha='".$fecha."'"
          ?>
         <tr>
           <td>
-            <?php echo $mostrarPago['fecha'] ?>
+            <?php echo htmlspecialchars($mostrarPago['fecha']) ?>
           </td>
           <td>
-            <?php echo $mostrarPago['efectivo'] ?>
+            <?php echo htmlspecialchars($mostrarPago['efectivo']) ?>
           </td>
           <td>
-            <?php echo $mostrarPago['tarjeta'] ?>
+            <?php echo htmlspecialchars($mostrarPago['tarjeta']) ?>
           </td>
           <td>
-            <?php echo $mostrarEgreso['egreso'] ?>
+            <?php echo htmlspecialchars($mostrarEgreso['egreso']) ?>
           </td>
           <td>
-            <?php echo $total ?>
+            <?php echo htmlspecialchars($total) ?>
           </td>
         </tr>
         <?php 

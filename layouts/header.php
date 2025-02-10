@@ -23,6 +23,9 @@
       <li class="nav-item active">
         <a class="nav-link" href="users.php">Usuarios</a>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="eventos.php">Calendario</a>
+      </li>
       <!-- <li class="nav-item active">
         <a class="nav-link" href="lista.php">Lista</a>
       </li> -->

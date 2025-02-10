@@ -9,13 +9,13 @@ try {
     $_POST['id_tipopersona'] = 1;
 
     $conexion->query("update persona set 
-        nombre='".$_POST['nombre']."', 
-        ape1='".$_POST['ape1']."', 
-        ape2='".$_POST['ape2']."', 
-        cmp='".$_POST['cmp']."',
-        especialidad='".$_POST['especialidad']."',
+        nombre='".mysqli_real_escape_string($conexion,$_POST['nombre'])."', 
+        ape1='".mysqli_real_escape_string($conexion,$_POST['ape1'])."', 
+        ape2='".mysqli_real_escape_string($conexion,$_POST['ape2'])."', 
+        cmp='".mysqli_real_escape_string($conexion,$_POST['cmp'])."',
+        especialidad='".mysqli_real_escape_string($conexion,$_POST['especialidad'])."',
         id_tipopersona='1'
-        where id=".$_POST['id']); 
+        where id=".mysqli_real_escape_string($conexion,$_POST['id'])); 
 
     $response['success'] = true;
     

@@ -6,12 +6,12 @@ $response = array('success' => false, 'message' => '');
 
 try {
     // Validar campos requeridos
-    if (empty($_POST['nombre']) || empty($_POST['ape1'])) {
+    if (empty(mysqli_real_escape_string($conexion,$_POST['nombre'])) || empty(mysqli_real_escape_string($conexion,$_POST['ape1']))) {
         throw new Exception('El nombre y apellido paterno son requeridos');
     }
 
     // Verificar duplicidad por número de documento si existe
-    if (!empty($_POST['nrodoc'])) {
+    if (!empty((mysqli_real_escape_string($conexion,$_POST['nrodoc'])))) {
         $check_doc = $conexion->query("SELECT id, nombre, ape1, ape2, especialidad FROM persona 
             WHERE nrodoc = '".$_POST['nrodoc']."' 
             AND id_tipodoc = '".$_POST['id_tipodoc']."'
@@ -47,15 +47,15 @@ try {
         nombre, ape1, ape2, nrodoc, id_tipodoc, fec_nac, 
         sexo, especialidad, estado_civil, id_tipopersona, status
     ) VALUES (
-        '".$_POST['nombre']."',
-        '".$_POST['ape1']."',
-        '".$_POST['ape2']."',
-        '".$_POST['nrodoc']."',
-        '".$_POST['id_tipodoc']."',
-        '".$_POST['fec_nac']."',
-        '".$_POST['sexo']."',
-        '".$_POST['especialidad']."',
-        '".$_POST['estado_civil']."',
+        '".mysqli_real_escape_string($conexion,$_POST['nombre'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['ape1'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['ape2'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['nrodoc'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['id_tipodoc'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['fec_nac'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['sexo'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['especialidad'])."',
+        '".mysqli_real_escape_string($conexion,$_POST['estado_civil'])."',
         '2',
         '1'
     )") or throw new Exception($conexion->error);
@@ -69,13 +69,13 @@ try {
             id_historia, pad, pas, spo2, fc, temp, peso, talla
         ) VALUES (
             '".$id_cliente."',
-            '".$_POST['pad']."',
-            '".$_POST['pas']."',
-            '".$_POST['spo2']."',
-            '".$_POST['fc']."',
-            '".$_POST['temp']."',
-            '".$_POST['peso']."',
-            '".$_POST['talla']."'
+            '".mysqli_real_escape_string($conexion,$_POST['pad'])."',
+            '".mysqli_real_escape_string($conexion,$_POST['pas'])."',
+            '".mysqli_real_escape_string($conexion,$_POST['spo2'])."',
+            '".mysqli_real_escape_string($conexion,$_POST['fc'])."',
+            '".mysqli_real_escape_string($conexion,$_POST['temp'])."',
+            '".mysqli_real_escape_string($conexion,$_POST['peso'])."',
+            '".mysqli_real_escape_string($conexion,$_POST['talla'])."'
         )") or throw new Exception($conexion->error);
     }
 

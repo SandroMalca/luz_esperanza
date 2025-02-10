@@ -21,7 +21,7 @@ if (isset($_POST['nombre']) && isset($_POST['precio'])) {
     }
 
     $conexion->query("insert into producto (nombre, precio, horario) 
-        values ('".$_POST['nombre']."', '".$precio."', '".$horarios."')") 
+        values ('".mysqli_real_escape_string($conexion,$_POST['nombre'])."', '".mysqli_real_escape_string($conexion,$precio)."', '".mysqli_real_escape_string($conexion,$horarios)."')") 
         or die($conexion->error);
 
     header("Location: ../inventario.php");
